@@ -1,4 +1,4 @@
-# NU_BC-Project1
+# NotSoBored Games
 Project #1 for Bootcamp
 
 test
