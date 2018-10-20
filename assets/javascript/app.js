@@ -1,167 +1,170 @@
-$(document).ready(() => {
-  "use strict";
+const LOCAL_STORAGE_VARS = {
+  username: "username",
+};
 
-  var my_collection;
+// https://boardgamegeek.com/wiki/page/BGG_XML_API2
+let BGG_API = {
+  config: {
+    path: "",
+    params: {}
+  },
 
-  // #region xmlstring
-  let xmlString = `<?xml version="1.0" encoding="utf-8" standalone="yes"?> <items totalitems="271" termsofuse="https://boardgamegeek.com/xmlapi/termsofuse" pubdate="Mon, 15 Oct 2018 00:18:57 +0000"> <item objecttype="thing" objectid="68448" subtype="boardgame" collid="24961369"> <name sortindex="1">7 Wonders</name> <yearpublished>2010</yearpublished>			<image>https://cf.geekdo-images.com/original/img/3DP_RW5lTX0WrV67s8qi8CsiXoQ=/0x0/pic860217.jpg</image> <thumbnail>https://cf.geekdo-images.com/thumb/img/Grz-qM9xwxlvQGK7B-MiljtO9pQ=/fit-in/200x150/pic860217.jpg</thumbnail> <status own="1" prevowned="0" fortrade="0" want="0" wanttoplay="0" wanttobuy="0" wishlist="0"  preordered="0" lastmodified="2017-07-10 18:27:03" /> <numplays>0</numplays>							</item> <item objecttype="thing" objectid="155987" subtype="boardgame" collid="43725531"> <name sortindex="1">Abyss</name> <yearpublished>2014</yearpublished>			<image>https://cf.geekdo-images.com/original/img/QZD3-w6S6hbAQO7AfTFc342WsqI=/0x0/pic1965255.jpg</image> <thumbnail>https://cf.geekdo-images.com/thumb/img/89XgMkYK9NLsjRxzSXm3JK9jou0=/fit-in/200x150/pic1965255.jpg</thumbnail> <status own="1" prevowned="0" fortrade="0" want="0" wanttoplay="0" wanttobuy="0" wishlist="0"  preordered="0" lastmodified="2017-07-10 17:47:38" /> <numplays>0</numplays>							</item> <item objecttype="thing" objectid="31260" subtype="boardgame" collid="24027746"> <name sortindex="1">Agricola</name> <yearpublished>2007</yearpublished>			<image>https://cf.geekdo-images.com/original/img/L-UBO3rBOmvIrZHZLSXOypyAUPw=/0x0/pic259085.jpg</image> <thumbnail>https://cf.geekdo-images.com/thumb/img/zl48oz7IeKlgWJVBLYd0nFJumdA=/fit-in/200x150/pic259085.jpg</thumbnail> <status own="1" prevowned="0" fortrade="0" want="0" wanttoplay="0" wanttobuy="0" wishlist="0"  preordered="0" lastmodified="2014-08-15 17:42:57" /> <numplays>0</numplays>							</item> <item objecttype="thing" objectid="119890" subtype="boardgame" collid="24961412"> <name sortindex="1">Agricola: All Creatures Big and Small</name> <yearpublished>2012</yearpublished>			<image>https://cf.geekdo-images.com/original/img/jeB8MXXENLZyEfwdcM5yD6OmUYw=/0x0/pic1514252.jpg</image> <thumbnail>https://cf.geekdo-images.com/thumb/img/Vt9igzurW29IDvWChj7AXzl8Fxs=/fit-in/200x150/pic1514252.jpg</thumbnail> <status own="0" prevowned="0" fortrade="0" want="0" wanttoplay="0" wanttobuy="0" wishlist="1" wishlistpriority="5" preordered="0" lastmodified="2014-09-28 21:29:57" /> <numplays>0</numplays>							</item> <item objecttype="thing" objectid="43018" subtype="boardgame" collid="25116149"> <name sortindex="1">Agricola: Farmers of the Moor</name> <yearpublished>2009</yearpublished>			<image>https://cf.geekdo-images.com/original/img/A_qTRozM63XVIAlhvrqHAMoIFuQ=/0x0/pic568164.jpg</image> <thumbnail>https://cf.geekdo-images.com/thumb/img/a75kvmv-PtlI_D-dcP4RkpfzUFE=/fit-in/200x150/pic568164.jpg</thumbnail> <status own="0" prevowned="0" fortrade="0" want="0" wanttoplay="0" wanttobuy="0" wishlist="1" wishlistpriority="2" preordered="0" lastmodified="2014-10-11 01:17:20" /> <numplays>0</numplays>							</item> <item objecttype="thing" objectid="6249" subtype="boardgame" collid="24402544"> <name sortindex="1">Alhambra</name> <yearpublished>2003</yearpublished>			<image>https://cf.geekdo-images.com/original/img/ydyfKVtjjidDlseOP2rL2HHCD8Y=/0x0/pic1502118.jpg</image> <thumbnail>https://cf.geekdo-images.com/thumb/img/IHP0JMesp62lvYC-4TXLCipOuWc=/fit-in/200x150/pic1502118.jpg</thumbnail> <status own="0" prevowned="0" fortrade="0" want="0" wanttoplay="0" wanttobuy="0" wishlist="1" wishlistpriority="3" preordered="0" lastmodified="2014-09-28 21:37:11" /> <numplays>0</numplays>							</item> <item objecttype="thing" objectid="1417" subtype="boardgame" collid="43726094"> <name sortindex="1">Alibi</name> <yearpublished>1993</yearpublished>			<image>https://cf.geekdo-images.com/original/img/NRQuEEhB4qVgHAxfqPxxGU6zmv8=/0x0/pic1511858.jpg</image> <thumbnail>https://cf.geekdo-images.com/thumb/img/aXTciMvduwW5-ocaXG7Va-SzCcw=/fit-in/200x150/pic1511858.jpg</thumbnail> <status own="1" prevowned="0" fortrade="0" want="0" wanttoplay="0" wanttobuy="0" wishlist="0"  preordered="0" lastmodified="2017-07-10 18:24:32" /> <numplays>0</numplays>							</item> <item objecttype="thing" objectid="110277" subtype="boardgame" collid="24961531"> <name sortindex="1">Among the Stars</name> <yearpublished>2012</yearpublished>			<image>https://cf.geekdo-images.com/original/img/YfZDrdGnVZqfp3Bgkl-TPdXPqRU=/0x0/pic2037906.jpg</image> <thumbnail>https://cf.geekdo-images.com/thumb/img/4LU_WjnaPnadLCLtKxcnGMY7fq4=/fit-in/200x150/pic2037906.jpg</thumbnail> <status own="0" prevowned="0" fortrade="0" want="0" wanttoplay="0" wanttobuy="0" wishlist="1" wishlistpriority="3" preordered="0" lastmodified="2014-09-28 21:39:15" /> <numplays>0</numplays>							</item> <item objecttype="thing" objectid="124742" subtype="boardgame" collid="24027803"> <name sortindex="1">Android: Netrunner</name> <yearpublished>2012</yearpublished>			<image>https://cf.geekdo-images.com/original/img/Wbp__Fl6QDKqzealhK2SDpoEk_g=/0x0/pic3738560.jpg</image> <thumbnail>https://cf.geekdo-images.com/thumb/img/fJp94uxjjBE5bGT0IxWZ5ePpe8A=/fit-in/200x150/pic3738560.jpg</thumbnail> <status own="1" prevowned="0" fortrade="0" want="0" wanttoplay="0" wanttobuy="0" wishlist="0"  preordered="0" lastmodified="2014-08-15 17:43:05" /> <numplays>0</numplays>							</item> <item objecttype="thing" objectid="139596" subtype="boardgame" collid="43725510"> <name sortindex="1">Android: Netrunner – Creation and Control</name> <yearpublished>2013</yearpublished>			<image>https://cf.geekdo-images.com/original/img/Fx5M1d33fR3lsQLN76fFym8PB1c=/0x0/pic1639594.jpg</image> <thumbnail>https://cf.geekdo-images.com/thumb/img/JPMgyCo6e4-jFnynyjs-mKs8u2M=/fit-in/200x150/pic1639594.jpg</thumbnail> <status own="1" prevowned="0" fortrade="0" want="0" wanttoplay="0" wanttobuy="0" wishlist="0"  preordered="0" lastmodified="2017-07-10 17:46:10" /> <numplays>0</numplays>							</item> <item objecttype="thing" objectid="152314" subtype="boardgame" collid="43725498"> <name sortindex="1">Android: Netrunner – Honor and Profit</name> <yearpublished>2014</yearpublished>			<image>https://cf.geekdo-images.com/original/img/n2EZvAj72YFlKj5w_GpkrRe7UiE=/0x0/pic1878471.jpg</image> <thumbnail>https://cf.geekdo-images.com/thumb/img/orFq3sbx0zHsMJVOf110FspOrUM=/fit-in/200x150/pic1878471.jpg</thumbnail> <status own="1" prevowned="0" fortrade="0" want="0" wanttoplay="0" wanttobuy="0" wishlist="0"  preordered="0" lastmodified="2017-07-10 17:45:29" /> <numplays>0</numplays>							</item> <item objecttype="thing" objectid="74" subtype="boardgame" collid="43725527"> <name sortindex="1">Apples to Apples</name> <yearpublished>2005</yearpublished>			<image>https://cf.geekdo-images.com/original/img/tsFiO-PD3W9xI5CmbRGBdIj3Eao=/0x0/pic577739.jpg</image> <thumbnail>https://cf.geekdo-images.com/thumb/img/0XATfRHA-gYzCA3psZ6OUaQsgXI=/fit-in/200x150/pic577739.jpg</thumbnail> <status own="1" prevowned="0" fortrade="0" want="0" wanttoplay="0" wanttobuy="0" wishlist="0"  preordered="0" lastmodified="2017-07-10 17:47:19" /> <numplays>0</numplays>							</item> <item objecttype="thing" objectid="15987" subtype="boardgame" collid="24027916"> <name sortindex="1">Arkham Horror</name> <yearpublished>2005</yearpublished>			<image>https://cf.geekdo-images.com/original/img/oArWMFiDP2tYbJvCY52jeLwlCyU=/0x0/pic175966.jpg</image> <thumbnail>https://cf.geekdo-images.com/thumb/img/iYGd4Rb34uNe6HRPUu9AWJzePtc=/fit-in/200x150/pic175966.jpg</thumbnail> <status own="0" prevowned="0" fortrade="0" want="0" wanttoplay="0" wanttobuy="0" wishlist="1" wishlistpriority="3" preordered="0" lastmodified="2014-07-15 11:23:41" /> <numplays>0</numplays>							</item> <item objecttype="thing" objectid="39683" subtype="boardgame" collid="24961447"> <name sortindex="1">At the Gates of Loyang</name> <yearpublished>2009</yearpublished>			<image>https://cf.geekdo-images.com/original/img/heq9_9W9Dq6BA5mWQlQLnRuqp_E=/0x0/pic3601060.jpg</image> <thumbnail>https://cf.geekdo-images.com/thumb/img/gXKvWQk7Hn_Ktq7ycn3Y8lX0j7I=/fit-in/200x150/pic3601060.jpg</thumbnail> <status own="0" prevowned="0" fortrade="0" want="0" wanttoplay="0" wanttobuy="0" wishlist="1" wishlistpriority="4" preordered="0" lastmodified="2014-09-28 21:32:11" /> <numplays>0</numplays>							</item> <item objecttype="thing" objectid="230802" subtype="boardgame" collid="47752905"> <name sortindex="1">Azul</name> <yearpublished>2017</yearpublished>			<image>https://cf.geekdo-images.com/original/img/9-SR48jyfxs4At6255sjHoly2sw=/0x0/pic3718275.jpg</image> <thumbnail>https://cf.geekdo-images.com/thumb/img/_ed_JktpgFwTr2WjEQgYMzHBvOQ=/fit-in/200x150/pic3718275.jpg</thumbnail> <status own="0" prevowned="0" fortrade="0" want="0" wanttoplay="0" wanttobuy="0" wishlist="1" wishlistpriority="4" preordered="0" lastmodified="2017-12-18 14:01:30" /> <numplays>0</numplays>							</item> </items>`;
-  // #endregion
+  _getAjax() {
+    const host = "https://www.boardgamegeek.com/xmlapi2";
+    const $params = $.param(BGG_API.config.params);
+    const queryURL = `${host}${BGG_API.config.path}?${$params}`;
 
-  const JQ_IDs = {
-    signup_userName: null,
-    signup_bggUserName: null,
-    signup_submit: null
-  };
-  for (let id of Object.keys(JQ_IDs)) {
-    JQ_IDs[id] = $(`#${id}`);
-  }
+    let result = null;
 
-  //#region Sign-Up 'Page'
-  // JQ_IDs.signup_submit.submit(function(event) {
-  //   event.preventDefault();
-  //   JQ_IDs.signup_userName.val().trim();
-  //   JQ_IDs.signup_bggUserName.val().trim();
-  // });
-  //#endregion
+    return $.ajax({
+      // url: "https://httpstat.us/202",
+      url: queryURL,
+      method: "GET",
+      // statusCode: {
+      //   202: () => {
+      //     console.log("202?!");
+      //   }
+      // }
+    })
+      // .done( (data, textStatus, jqXHR) => {
+      //   // console.log(data, textStatus, jqXHR);
+      //   console.log(jqXHR.status);
+      //   if (jqXHR.status === 202) {
+      //     console.log("202 HERE =O");
+      //     throw "202";
+      //   }
+      // })
+      .then(
+        (data, textStatus, jqXHR) => {
+          return $.xml2json(data)["#document"]; },
 
-  // Add to your collection
+        (jqXHR, textStatus) => {
+          console.log("$ajax.then fail: ", textStatus, jqXHR.status); })
 
-  // Get a user's collection
-  function getAUsersCollection(bggName) {
-    // https://boardgamegeek.com/wiki/page/BGG_XML_API2
+      .catch(error => {
+        console.log("Error @ _getAjax", error);
+      });
+  },
 
-    $.ajax({
-      url: `https://www.boardgamegeek.com/xmlapi2/collection?username=${bggName}&own=1`
-    }).then(response => {
-      my_collection = $.xml2json(response);
-      my_collection = my_collection["#document"]["items"]["item"];
-
-      for (var i = 0; i < my_collection.length; i++) {
-        const collItem = my_collection[i];
-        const tb = collItem.thumbnail;
-
-        const name = collItem.name["_"];
-
-        let img = $("<img>").attr("src", tb);
-        let li = $("<li>").append(img, $("<p>").text(name));
-        $("#collectionList").append(li);
+  fetchUsersOwnedCollection(user) {
+    BGG_API.config = {
+      path: "/collection",
+      params: {
+        username: user,
+        own: 1
       }
-    });
-
-    // let xmlFromString = $.parseXML(xmlString);
-    // my_collection = $.xml2json(xmlFromString);
-    // my_collection = my_collection["#document"]["items"]["item"];
-    // console.log(my_collection);
-    // for (var i = 0; i < 10; i++) {
-    //   const collItem = my_collection[i];
-    //   const tb = collItem.thumbnail;
-    //   console.log(tb);
-
-    //   const name = collItem.name["_"];
-
-    //   let img = $("<img>").attr("src", tb);
-    //   let li = $("<li>").append(img, $("<p>").text(name));
-    //   $("#collectionList").append(li);
-    //   // $("#collection").append($("<li>").text(my_collection[i].name['_']));
-    // }
-  }
-
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyBDZKBHGZEdHDkf3NAPWIFJsPL7VYkFqhs",
-    authDomain: "not-so-bored-games.firebaseapp.com",
-    databaseURL: "https://not-so-bored-games.firebaseio.com",
-    projectId: "not-so-bored-games",
-    storageBucket: "not-so-bored-games.appspot.com",
-    messagingSenderId: "1049713805315"
-  };
-  firebase.initializeApp(config);
-
-  var database = firebase.database();
-  var userNamesRef = database.ref("/usernames");
-  var eventsRef = database.ref("/events");
-
-  // Button for adding trains
-  JQ_IDs.signup_submit.on("click", function(event) {
-    event.preventDefault();
-
-    // Grab user input
-    var uniqueUsername = JQ_IDs.signup_userName.val().trim();
-    // if (!uniqueUsername) {
-    //   // TODO: validate/notify that we need the username
-    //   return;
-    // }
-    var bggUsername = JQ_IDs.signup_bggUserName.val().trim();
-
-    // Create local object
-    var newUser = {
-      username: uniqueUsername,
-      bgg: bggUsername
     };
 
-    // Uploads train data to the database
-    let myRef = userNamesRef.child(uniqueUsername);
-    myRef.set({ bgg: bggUsername });
+    // #region Example Response
+    // let exampleRespObj = [ { "$": { "objecttype": "thing", "objectid": "68448", "subtype": "boardgame", "collid": "24961369" }, "name": { "$": { "sortindex": "1" }, "_": "7 Wonders" }, "yearpublished": "2010", "image": "https://cf.geekdo-images.com/original/img/3DP_RW5lTX0WrV67s8qi8CsiXoQ=/0x0/pic860217.jpg", "thumbnail": "https://cf.geekdo-images.com/thumb/img/Grz-qM9xwxlvQGK7B-MiljtO9pQ=/fit-in/200x150/pic860217.jpg", "status": { "$": { "own": "1", "prevowned": "0", "fortrade": "0", "want": "0", "wanttoplay": "0", "wanttobuy": "0", "wishlist": "0", "preordered": "0", "lastmodified": "2017-07-10 18:27:03" }, "_": "" }, "numplays": "0" }, { "$": { "objecttype": "thing", "objectid": "155987", "subtype": "boardgame", "collid": "43725531" }, "name": { "$": { "sortindex": "1" }, "_": "Abyss" }, "yearpublished": "2014", "image": "https://cf.geekdo-images.com/original/img/QZD3-w6S6hbAQO7AfTFc342WsqI=/0x0/pic1965255.jpg", "thumbnail": "https://cf.geekdo-images.com/thumb/img/89XgMkYK9NLsjRxzSXm3JK9jou0=/fit-in/200x150/pic1965255.jpg", "status": { "$": { "own": "1", "prevowned": "0", "fortrade": "0", "want": "0", "wanttoplay": "0", "wanttobuy": "0", "wishlist": "0", "preordered": "0", "lastmodified": "2017-07-10 17:47:38" }, "_": "" }, "numplays": "0" }, { "$": { "objecttype": "thing", "objectid": "31260", "subtype": "boardgame", "collid": "24027746" }, "name": { "$": { "sortindex": "1" }, "_": "Agricola" }, "yearpublished": "2007", "image": "https://cf.geekdo-images.com/original/img/L-UBO3rBOmvIrZHZLSXOypyAUPw=/0x0/pic259085.jpg", "thumbnail": "https://cf.geekdo-images.com/thumb/img/zl48oz7IeKlgWJVBLYd0nFJumdA=/fit-in/200x150/pic259085.jpg", "status": { "$": { "own": "1", "prevowned": "0", "fortrade": "0", "want": "0", "wanttoplay": "0", "wanttobuy": "0", "wishlist": "0", "preordered": "0", "lastmodified": "2014-08-15 17:42:57" }, "_": "" }, "numplays": "0" } ];
+    // #endregion Example Response
 
-    // Logs everything to console
-    console.log(newUser.username);
-    console.log(newUser.bgg);
-
-    // Clears all of the text-boxes
-    JQ_IDs.signup_userName.val("");
-    JQ_IDs.signup_bggUserName.val("");
-
-    if (bggUsername) {
-      getAUsersCollection(bggUsername);
-    }
-  });
-
-  const events = {
-    create_eventName: null,
-    create_eventDate: null,
-    create_eventAddress: null,
-    create_eventCity: null,
-    create_eventState: null,
-    create_eventZip: null,
-    create_submit: null
-  };
-  for (let id of Object.keys(events)) {
-    events[id] = $(`#${id}`);
-  }
-
-  events.create_submit.on("click", function(event) {
-    event.preventDefault();
-
-    // Grab user input
-    var eventName = events.create_eventName.val().trim();
-    var eventDate = events.create_eventDate.val().trim();
-    var eventAddress = events.create_eventAddress.val().trim();
-    var eventCity = events.create_eventCity.val().trim();
-    var eventState = events.create_eventState.val().trim();
-    var eventsZip = events.create_eventZip.val().trim();
-
-    // Create local object
-
-    // Uploads train data to the database
-    let newRef = eventsRef.child(eventName);
-    newRef.set({
-      date: eventDate,
-      Address: eventAddress,
-      City: eventCity,
-      State: eventState,
-      Zip: eventsZip
+    return BGG_API._getAjax().then(function(collectionObj) {
+      // console.log(collectionObj.items.item);
+      let mapped = collectionObj.items.item.map( item => {
+        return {
+          name        : item.name._,
+          objectid    : item.$.objectid,
+          imageURL    : item.image,
+          thumbnailURL: item.thumbnail
+        };
+      });
+      // console.log(mapped);
+      return mapped;
     });
+  },
 
-    // Logs everything to console
-    // console.log(newUser.username);
-    // console.log(newUser.bgg);
+  checkUserName(name) {
+    BGG_API.config = {
+      path: "/user",
+      params: {
+        name: name,
+        buddies: 0,
+        guilds: 0,
+        domain: "boardgame"
+      }
+    };
+    // #region Example Response
+    // let exampleRespObj_valid = { "$": {}, "user": { "$": { "id": "917172", "name": "NiRuaG", "termsofuse": "https://boardgamegeek.com/xmlapi/termsofuse" }, "firstname": { "$": { "value": "a" }, "_": "" }, "lastname": { "$": { "value": "g" }, "_": "" }, "avatarlink": { "$": { "value": "N/A" }, "_": "" }, "yearregistered": { "$": { "value": "2014" }, "_": "" }, "lastlogin": { "$": { "value": "2018-10-17" }, "_": "" }, "stateorprovince": { "$": { "value": "" }, "_": "" }, "country": { "$": { "value": "" }, "_": "" }, "webaddress": { "$": { "value": "" }, "_": "" }, "xboxaccount": { "$": { "value": "" }, "_": "" }, "wiiaccount": { "$": { "value": "" }, "_": "" }, "psnaccount": { "$": { "value": "" }, "_": "" }, "battlenetaccount": { "$": { "value": "" }, "_": "" }, "steamaccount": { "$": { "value": "" }, "_": "" }, "traderating": { "$": { "value": "0" }, "_": "" }, "marketrating": { "$": { "value": "0" }, "_": "" } } };
+    // #endregion Example Response
 
-    // Clears all of the text-boxes
-    events.create_eventName.val("");
-    events.create_eventDate.val("");
-    events.create_eventAddress.val("");
-    events.create_eventCity.val("");
-    events.create_eventState.val("");
-    events.create_eventZip.val("");
-  });
-});
+    // user.$.id will be a # (string) IF the username exists, blank ("") otherwise
+    // user.$.name will be a copy of whatever the query parameter was, also copying upper/lower cases
+    return BGG_API._getAjax().then(function(nameObj) {
+      return { id: nameObj.user.$.id };
+    })
+    .catch(function(error) {
+      console.log("Error @ checkUserName", error);
+    });
+  },
+
+  getGameInfoById(gameIDs) {
+    BGG_API.config = {
+      path: "/thing",
+      params: {
+        id: gameIDs,
+        type: "boardgame",
+        stats: 1
+      }
+    };
+
+    // #region Example Response
+    // let exampleRespObj_empty = { "$": {}, "items": { "$": { "termsofuse": "https://boardgamegeek.com/xmlapi/termsofuse" }, "_": "" } };
+    // let exampleRespObj_valid = { "$": {}, "items": { "$": { "termsofuse": "https://boardgamegeek.com/xmlapi/termsofuse" }, "item": { "$": { "type": "boardgame", "id": "68448" }, "thumbnail": "https://cf.geekdo-images.com/thumb/img/Grz-qM9xwxlvQGK7B-MiljtO9pQ=/fit-in/200x150/pic860217.jpg", "image": "https://cf.geekdo-images.com/original/img/3DP_RW5lTX0WrV67s8qi8CsiXoQ=/0x0/pic860217.jpg", "name": [{ "$": { "type": "primary", "sortindex": "1", "value": "7 Wonders" }, "_": "" }, { "$": { "type": "alternate", "sortindex": "1", "value": "7 csoda" }, "_": "" }, { "$": { "type": "alternate", "sortindex": "1", "value": "7 Cudów Świata" }, "_": "" }, { "$": { "type": "alternate", "sortindex": "1", "value": "7 divů světa" }, "_": "" }, { "$": { "type": "alternate", "sortindex": "1", "value": "7 чудес" }, "_": "" }, { "$": { "type": "alternate", "sortindex": "1", "value": "Τα 7 θαύματα του κόσμου" }, "_": "" }, { "$": { "type": "alternate", "sortindex": "1", "value": "七大奇蹟" }, "_": "" }, { "$": { "type": "alternate", "sortindex": "1", "value": "世界の七不思議" }, "_": "" }], "description": "You are the leader of one of the 7 great cities of the Ancient World. Gather resources, develop commercial routes, and affirm your military supremacy. Build your city and erect an architectural wonder which will transcend future times.&#10;&#10;7 Wonders lasts three ages. In each age, players receive seven cards from a particular deck, choose one of those cards, then pass the remainder to an adjacent player. Players reveal their cards simultaneously, paying resources if needed or collecting resources or interacting with other players in various ways. (Players have individual boards with special powers on which to organize their cards, and the boards are double-sided). Each player then chooses another card from the deck they were passed, and the process repeats until players have six cards in play from that age. After three ages, the game ends.&#10;&#10;In essence, 7 Wonders is a card development game. Some cards have immediate effects, while others provide bonuses or upgrades later in the game. Some cards provide discounts on future purchases. Some provide military strength to overpower your neighbors and others give nothing but victory points. Each card is played immediately after being drafted, so you'll know which cards your neighbor is receiving and how his choices might affect what you've already built up. Cards are passed left-right-left over the three ages, so you need to keep an eye on the neighbors in both directions.&#10;&#10;Though the box of earlier editions is listed as being for 3&ndash;7 players, there is an official 2-player variant included in the instructions.&#10;&#10;", "yearpublished": { "$": { "value": "2010" }, "_": "" }, "minplayers": { "$": { "value": "2" }, "_": "" }, "maxplayers": { "$": { "value": "7" }, "_": "" }, "poll": [{ "$": { "name": "suggested_numplayers", "title": "User Suggested Number of Players", "totalvotes": "1646" }, "results": [{ "$": { "numplayers": "1" }, "result": [{ "$": { "value": "Best", "numvotes": "4" }, "_": "" }, { "$": { "value": "Recommended", "numvotes": "11" }, "_": "" }, { "$": { "value": "Not Recommended", "numvotes": "922" }, "_": "" }] }, { "$": { "numplayers": "2" }, "result": [{ "$": { "value": "Best", "numvotes": "108" }, "_": "" }, { "$": { "value": "Recommended", "numvotes": "318" }, "_": "" }, { "$": { "value": "Not Recommended", "numvotes": "749" }, "_": "" }] }, { "$": { "numplayers": "3" }, "result": [{ "$": { "value": "Best", "numvotes": "358" }, "_": "" }, { "$": { "value": "Recommended", "numvotes": "840" }, "_": "" }, { "$": { "value": "Not Recommended", "numvotes": "146" }, "_": "" }] }, { "$": { "numplayers": "4" }, "result": [{ "$": { "value": "Best", "numvotes": "843" }, "_": "" }, { "$": { "value": "Recommended", "numvotes": "565" }, "_": "" }, { "$": { "value": "Not Recommended", "numvotes": "29" }, "_": "" }] }, { "$": { "numplayers": "5" }, "result": [{ "$": { "value": "Best", "numvotes": "693" }, "_": "" }, { "$": { "value": "Recommended", "numvotes": "661" }, "_": "" }, { "$": { "value": "Not Recommended", "numvotes": "42" }, "_": "" }] }, { "$": { "numplayers": "6" }, "result": [{ "$": { "value": "Best", "numvotes": "318" }, "_": "" }, { "$": { "value": "Recommended", "numvotes": "848" }, "_": "" }, { "$": { "value": "Not Recommended", "numvotes": "122" }, "_": "" }] }, { "$": { "numplayers": "7" }, "result": [{ "$": { "value": "Best", "numvotes": "289" }, "_": "" }, { "$": { "value": "Recommended", "numvotes": "773" }, "_": "" }, { "$": { "value": "Not Recommended", "numvotes": "210" }, "_": "" }] }, { "$": { "numplayers": "7+" }, "result": [{ "$": { "value": "Best", "numvotes": "26" }, "_": "" }, { "$": { "value": "Recommended", "numvotes": "67" }, "_": "" }, { "$": { "value": "Not Recommended", "numvotes": "620" }, "_": "" }] }] }, { "$": { "name": "suggested_playerage", "title": "User Suggested Player Age", "totalvotes": "366" }, "results": { "$": {}, "result": [{ "$": { "value": "2", "numvotes": "0" }, "_": "" }, { "$": { "value": "3", "numvotes": "0" }, "_": "" }, { "$": { "value": "4", "numvotes": "1" }, "_": "" }, { "$": { "value": "5", "numvotes": "0" }, "_": "" }, { "$": { "value": "6", "numvotes": "14" }, "_": "" }, { "$": { "value": "8", "numvotes": "99" }, "_": "" }, { "$": { "value": "10", "numvotes": "140" }, "_": "" }, { "$": { "value": "12", "numvotes": "90" }, "_": "" }, { "$": { "value": "14", "numvotes": "18" }, "_": "" }, { "$": { "value": "16", "numvotes": "3" }, "_": "" }, { "$": { "value": "18", "numvotes": "1" }, "_": "" }, { "$": { "value": "21 and up", "numvotes": "0" }, "_": "" }] } }, { "$": { "name": "language_dependence", "title": "Language Dependence", "totalvotes": "380" }, "results": { "$": {}, "result": [{ "$": { "level": "1", "value": "No necessary in-game text", "numvotes": "291" }, "_": "" }, { "$": { "level": "2", "value": "Some necessary text - easily memorized or small crib sheet", "numvotes": "84" }, "_": "" }, { "$": { "level": "3", "value": "Moderate in-game text - needs crib sheet or paste ups", "numvotes": "4" }, "_": "" }, { "$": { "level": "4", "value": "Extensive use of text - massive conversion needed to be playable", "numvotes": "1" }, "_": "" }, { "$": { "level": "5", "value": "Unplayable in another language", "numvotes": "0" }, "_": "" }] } }], "playingtime": { "$": { "value": "30" }, "_": "" }, "minplaytime": { "$": { "value": "30" }, "_": "" }, "maxplaytime": { "$": { "value": "30" }, "_": "" }, "minage": { "$": { "value": "10" }, "_": "" }, "link": [{ "$": { "type": "boardgamecategory", "id": "1050", "value": "Ancient" }, "_": "" }, { "$": { "type": "boardgamecategory", "id": "1002", "value": "Card Game" }, "_": "" }, { "$": { "type": "boardgamecategory", "id": "1029", "value": "City Building" }, "_": "" }, { "$": { "type": "boardgamecategory", "id": "1015", "value": "Civilization" }, "_": "" }, { "$": { "type": "boardgamemechanic", "id": "2041", "value": "Card Drafting" }, "_": "" }, { "$": { "type": "boardgamemechanic", "id": "2040", "value": "Hand Management" }, "_": "" }, { "$": { "type": "boardgamemechanic", "id": "2004", "value": "Set Collection" }, "_": "" }, { "$": { "type": "boardgamemechanic", "id": "2020", "value": "Simultaneous Action Selection" }, "_": "" }, { "$": { "type": "boardgamemechanic", "id": "2015", "value": "Variable Player Powers" }, "_": "" }, { "$": { "type": "boardgamefamily", "id": "17552", "value": "7 Wonders" }, "_": "" }, { "$": { "type": "boardgamefamily", "id": "27646", "value": "Tableau Building" }, "_": "" }, { "$": { "type": "boardgameexpansion", "id": "247315", "value": "7 Wonders: Armada" }, "_": "" }, { "$": { "type": "boardgameexpansion", "id": "154638", "value": "7 Wonders: Babel" }, "_": "" }, { "$": { "type": "boardgameexpansion", "id": "110308", "value": "7 Wonders: Catan" }, "_": "" }, { "$": { "type": "boardgameexpansion", "id": "111661", "value": "7 Wonders: Cities" }, "_": "" }, { "$": { "type": "boardgameexpansion", "id": "92539", "value": "7 Wonders: Leaders" }, "_": "" }, { "$": { "type": "boardgameexpansion", "id": "83445", "value": "7 Wonders: Manneken Pis" }, "_": "" }, { "$": { "type": "boardgameexpansion", "id": "133993", "value": "7 Wonders: Wonder Pack" }, "_": "" }, { "$": { "type": "boardgameexpansion", "id": "164649", "value": "Collection (fan expansion for 7 Wonders)" }, "_": "" }, { "$": { "type": "boardgameexpansion", "id": "140098", "value": "Empires (fan expansion for 7 Wonders)" }, "_": "" }, { "$": { "type": "boardgameexpansion", "id": "138187", "value": "Game Wonders (fan expansion for 7 Wonders)" }, "_": "" }, { "$": { "type": "boardgameexpansion", "id": "134849", "value": "Lost Wonders (fan expansion for 7 Wonders)" }, "_": "" }, { "$": { "type": "boardgameexpansion", "id": "131947", "value": "More Wonders... (fan expansion for 7 Wonders)" }, "_": "" }, { "$": { "type": "boardgameexpansion", "id": "132146", "value": "Myths (fan expansion for 7 Wonders)" }, "_": "" }, { "$": { "type": "boardgameexpansion", "id": "164648", "value": "Ruins (fan expansion for 7 Wonders)" }, "_": "" }, { "$": { "type": "boardgameexpansion", "id": "164647", "value": "Sailors (fan expansion for 7 Wonders)" }, "_": "" }, { "$": { "type": "boardgamedesigner", "id": "9714", "value": "Antoine Bauza" }, "_": "" }, { "$": { "type": "boardgameartist", "id": "9714", "value": "Antoine Bauza" }, "_": "" }, { "$": { "type": "boardgameartist", "id": "12016", "value": "Miguel Coimbra" }, "_": "" }, { "$": { "type": "boardgamepublisher", "id": "4384", "value": "Repos Production" }, "_": "" }, { "$": { "type": "boardgamepublisher", "id": "23043", "value": "ADC Blackfire Entertainment" }, "_": "" }, { "$": { "type": "boardgamepublisher", "id": "157", "value": "Asmodee" }, "_": "" }, { "$": { "type": "boardgamepublisher", "id": "15889", "value": "Asterion Press" }, "_": "" }, { "$": { "type": "boardgamepublisher", "id": "15605", "value": "Galápagos Jogos" }, "_": "" }, { "$": { "type": "boardgamepublisher", "id": "8820", "value": "Gém Klub Kft." }, "_": "" }, { "$": { "type": "boardgamepublisher", "id": "1391", "value": "Hobby Japan" }, "_": "" }, { "$": { "type": "boardgamepublisher", "id": "6214", "value": "Kaissa Chess & Games" }, "_": "" }, { "$": { "type": "boardgamepublisher", "id": "3218", "value": "Lautapelit.fi" }, "_": "" }, { "$": { "type": "boardgamepublisher", "id": "9325", "value": "Lifestyle Boardgames Ltd" }, "_": "" }, { "$": { "type": "boardgamepublisher", "id": "7466", "value": "Rebel" }, "_": "" }] } } }
+    // #endregion Example Response
+
+    return BGG_API._getAjax().then(function (thingObj) {
+      // console.log("thingobj: ", thingObj.items.item);
+      let mapped = thingObj.items.item.map(item => {
+        return {
+          description : item.description,
+          imageURL    : item.image      ,
+          thumbnailURL: item.thumbnail  ,
+          minage      : item.minage     .$.value,
+          minplayers  : item.minplayers .$.value,
+          maxplayer   : item.maxplayers .$.value,
+          minplaytime : item.minplaytime.$.value,
+          maxplaytime : item.maxplaytime.$.value,
+          playingtime : item.playingtime.$.value,
+          weight      : item.statistics .ratings.averageweight.$.value,
+        };
+      });
+      // console.log(mapped);
+      return mapped;
+    })
+    .catch(function(error) {
+      console.log("Error @ getGameInfoById", error);
+    });
+  },
+
+  searchForGameByName(name) {
+    BGG_API.config = {
+      path: "/search",
+      params: {
+        query: name,
+        type: "boardgame"
+      }
+    };
+
+    // #region Example Response
+    // #endregion Example Response
+
+    return BGG_API._getAjax().then(function(searchResults) {
+      // console.log(searchResults.items.item);
+      let ids="";
+      searchResults.items.item.forEach( item => {
+        ids += item.$.id+","
+      });
+      return ids;
+    })
+    .then(function(gameIDs) {
+      BGG_API.getGameInfoById(gameIDs);
+    })
+    .catch(function(error) {
+      console.log("Error @ searchForGameByName", error);
+    });
+  }
+};
+
+// let xmlFromString = $.parseXML(xmlString);
+// my_collection = $.xml2json(xmlFromString);
