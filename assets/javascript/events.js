@@ -5,10 +5,7 @@ $(document).ready(() => {
   //   const events = {
   //     create_eventName: null,
   //     create_eventDate: null,
-  //     create_eventAddress: null,
-  //     create_eventCity: null,
-  //     create_eventState: null,
-  //     create_eventZip: null,
+  //     create_eventAddressFul: null,
   //     create_submit: null
   //   };
   //   for (let id of Object.keys(events)) {
@@ -21,20 +18,14 @@ $(document).ready(() => {
   //     // Grab user input
   //     var eventName = events.create_eventName.val().trim();
   //     var eventDate = events.create_eventDate.val().trim();
-  //     var eventAddress = events.create_eventAddress.val().trim();
-  //     var eventCity = events.create_eventCity.val().trim();
-  //     var eventState = events.create_eventState.val().trim();
-  //     var eventsZip = events.create_eventZip.val().trim();
+  //     var eventAddressFull = events.create_eventAddressFull.val().trim();
 
   //     // Create local object
 
   //     let newRef = eventsRef.child(eventName);
   //     newRef.set({
   //       date: eventDate,
-  //       Address: eventAddress,
-  //       City: eventCity,
-  //       State: eventState,
-  //       Zip: eventsZip
+  //       Address: eventAddressFull,
   //     });
 
   //     // Logs everything to console
@@ -44,8 +35,5 @@ $(document).ready(() => {
   //     // Clears all of the text-boxes
   //     events.create_eventName.val("");
   //     events.create_eventDate.val("");
-  //     events.create_eventAddress.val("");
-  //     events.create_eventCity.val("");
-  //     events.create_eventState.val("");
-  //     events.create_eventZip.val("");
+  //     events.create_eventAddressFull.val("");
 });
