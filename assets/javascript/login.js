@@ -12,7 +12,7 @@ $(document).ready(() => {
     JQ_IDs[id] = $(`#${id}`);
   }
 
-  // Check Local Storage
+  // Check Local Storage for username
   let username = localStorage.getItem(LOCAL_STORAGE_VARS.username);
   if (username){
     console.log("GOT A NAME!", username);
@@ -25,7 +25,7 @@ $(document).ready(() => {
   let database = getFirebaseDB();
   var userNamesRef = database.ref("/usernames");
 
-
+  // Login / Sign-Up
   JQ_IDs.signup_form.submit(function(event) {
     event.preventDefault();
 
@@ -53,4 +53,6 @@ $(document).ready(() => {
     // }
     return false;
   });
+
+  // ADD
 });

@@ -114,7 +114,7 @@ let BGG_API = {
     // #endregion Example Response
 
     return BGG_API._getAjax().then(function (thingObj) {
-      console.log("thingobj: ", thingObj.items.item);
+      // console.log("thingobj: ", thingObj.items.item);
       let mapped = thingObj.items.item.map(item => {
         return {
           description : item.description,
@@ -129,7 +129,7 @@ let BGG_API = {
           weight      : item.statistics .ratings.averageweight.$.value,
         };
       });
-      console.log(mapped);
+      // console.log(mapped);
       return mapped;
     })
     .catch(function(error) {
