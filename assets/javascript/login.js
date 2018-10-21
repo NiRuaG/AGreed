@@ -4,10 +4,10 @@ console.log("LOGIN READY!");
 
 //#region DOM ELEMENTS
 const JQ_IDs = {
-  signup_form: null,
-  signup_userName: null,
-  signup_bggUserName: null,
-  signup_submit: null
+  loginForm      : null,
+  login_userName : null,
+  login_submit   : null,
+  loginModal     : null,
 };
 for (let id of Object.keys(JQ_IDs)) {
   JQ_IDs[id] = $(`#${id}`);
@@ -24,7 +24,7 @@ let thisUsersRef = null;
 let username = "";
 let collection = [];
 
-function buildUpUserFB(username) {
+function buildUpUser(username) {
   console.log("building FB for user", username)
   localStorage.setItem(LOCAL_STORAGE_VARS.username, username);
   thisUsersRef = userNamesRef.child(username);
@@ -53,7 +53,7 @@ function signIn(name) {
   console.log("Sign in/up as", name);
   checkFBforName(name).then(doesExist => {
     // Regardless if this is a previous user, we need the FB user node
-    buildUpUserFB(name);
+    buildUpUser(name);
     if (doesExist) {
       console.log("user already has account on FB");
       // Firebase knows this name
@@ -63,7 +63,6 @@ function signIn(name) {
       console.log("adding user to FB")
       // Sign them up!
       thisUsersRef.set({signUpAt: firebase.database.ServerValue.TIMESTAMP }); // give them a persistent data node to make sure they stay in the db
-      console.log("VISUAL: remove modal");
     }
   });
 }
@@ -272,10 +271,11 @@ function addEvent() {
 
 
 //#region SUBMITS / CLICKS
-JQ_IDs.signup_form.submit(function(event) {
+JQ_IDs.loginForm.submit(function(event) {
+  console.log("submitting form!");
   event.preventDefault();
 
-  var username_input = JQ_IDs.signup_userName.val().trim();
+  var username_input = JQ_IDs.login_userName.val().trim();
   if (!username_input) {
     //? TODO: validate/notify that we need the username
     return false;
@@ -283,9 +283,8 @@ JQ_IDs.signup_form.submit(function(event) {
 
   signIn(username_input);
 
-  // TODO: Clear form inputs
-  // JQ_IDs.signup_userName.val("");
-  // JQ_IDs.signup_bggUserName.val("");
+  JQ_IDs.login_userName.val("");
+  JQ_IDs.loginModal.foundation('close');
 
   return false;
 });
@@ -301,7 +300,7 @@ if (username) {
     console.log("user existence in FB? ", doesExist);
     if (doesExist) {
       // Firebase knows this name
-      buildUpUserFB(username);
+      buildUpUser(username);
       populateCollectionFromFB(thisUsersRef);
       populateEventsFromFB(thisUsersRef);
     } else {
@@ -312,9 +311,8 @@ if (username) {
 }
 if (!username) { // using if (instead of else) in order to also catch invalid localstorage from above
   console.log("local storage has no name");
-  // TODO: localStorage.clear(); // clear other local storage? this correct, necessary to do?
-  // TODO: Show modal
-  console.log("show the login/signup modal!");
+  //? TODO: localStorage.clear(); //? clear other local storage? this correct, necessary to do?
+  JQ_IDs.loginModal.foundation('open');
 }
 
 // TODO: bggUser  = localStorage.getItem(LOCAL_STORAGE_VARS.bggname );
