@@ -1,46 +1,68 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Not so BORED Games</title>
-    <link rel="stylesheet" href="Foundation-6.4.2/css/foundation.css">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="assets/javascript/xml2json.js"></script>
-  </head>
-  <body>
-  <!-- Sign On Page -->
-  <form>
-    <div class="grid-container">
-      <div class="grid-x grid-padding-x">
-        <div class="medium-6">
-          <label>Unique Username
-            <input id="signup_userName" type="text" placeholder="Unique Username">
-          </label>
-        </div>
-        <div class="medium-6">
-          <label> (Highly Recommended! <a href="boardgamegeek.com">boardgamegeek.com</a>)
-            <input id="signup_bggUserName" type="text" placeholder="Existing BoardGameGeek Username">
-          </label>
-        </div>
-        <a class="button expanded large-down-expanded" id="signup_submit" type="submit" href="#">Login / Sign-Up</a>
-      </div>
-    </div>
-  </form>
 
-  <ul id="collectionList">
-    <!-- colleciton items go here -->
-  </ul>
-
-
-  <script src="Foundation-6.4.2/js/vendor/jquery.js"></script>
-  <script src="Foundation-6.4.2/js/vendor/what-input.js"></script>
-  <script src="Foundation-6.4.2/js/vendor/foundation.min.js"></script>
-  <script>$(document).foundation();</script>
-  <script src="https://www.gstatic.com/firebasejs/5.5.4/firebase.js"></script>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Not so BORED Games</title>
+  <link rel="stylesheet" href="Foundation-6.4.2/css/foundation.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="assets/javascript/xml2json.js"></script>
-  <script src="assets/javascript/app.js"></script>
-  </body>
+</head>
+
+<body>
+  <div class="reveal" id="exampleModal1" data-reveal>
+    <h1>WELCOME</h1>
+    <form>
+      <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+          <div class="medium-6">
+            <label>Unique Username
+              <input id="signup_userName" type="text" placeholder="Unique Username">
+            </label>
+          </div>
+          <div class="medium-6">
+            <label>)
+              <input id="signup_bggUserName" type="text" placeholder="Existing BoardGameGeek Username">
+            </label>
+          </div>
+          <a class="button expanded large-down-expanded" id="signup_submit" type="submit" href="#">Login / Sign-Up</a>
+        </div>
+      </div>
+    </form>
+    <!-- <button class="close-button" data-close aria-label="Close modal" type="button"> -->
+    <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="grid-x">
+    <ul class="vertical menu cell medium-2">
+      <li class="circularThumbnail"></li>
+      <br>
+      <li>USERNAME</li>
+      <li><a href="#">Link to something maybe</a></li>
+      <li><a href="#">Something else..placeholder</a></li>
+    </ul>
+    <div class="events cell medium-10">
+      <h3>Events</h3>
+      <h3>My Collection</h3>
+      <p>Highly Recommended! <a href="boardgamegeek.com">boardgamegeek.com</a></p>
+      <!-- colleciton items go here -->
+      <ul id="collectionList"></ul>
+    </div>
+  </div>
+
+  <div id="added sources and pages">
+    <script src="Foundation-6.4.2/js/vendor/jquery.js"></script>
+    <script src="Foundation-6.4.2/js/vendor/what-input.js"></script>
+    <script src="Foundation-6.4.2/js/vendor/foundation.min.js"></script>
+    <script>$(document).foundation();</script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.4/firebase.js"></script>
+    <script src="assets/javascript/xml2json.js"></script>
+    <script src="assets/javascript/app.js"></script>
+  </div>
+</body>
+
 </html>

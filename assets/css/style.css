@@ -1,5 +1,29 @@
 body {
-    background-image: url("../images/architecture-bg.jpg");
-    background-size: 100%;
+  background-image: url("../images/architecture-bg.jpg");
+  background-size: 100%;
+}
 
+.menu {
+  position: relative;
+  background-color: black;
+  color: white;
+  height: 600px;
+}
+
+.circularThumbnail {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  /* margin: 10% 0 0 10%; */
+  /* padding: 0 0 0 0; */
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  background: url("../images/Thumbnail_Potatoe.jpg") no-repeat 50%;
+}
+
+h3 {
+    margin-top: 5%;
+    padding: .5% 0 .5% 10%;
+    background-color: black;
+    color: white;
 }
