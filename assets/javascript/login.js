@@ -8,9 +8,24 @@ const JQ_IDs = {
   login_userName : null,
   login_submit   : null,
   loginModal     : null,
+
+  collectionList : null,
+  gameTemplate : null,
 };
 for (let id of Object.keys(JQ_IDs)) {
   JQ_IDs[id] = $(`#${id}`);
+}
+
+const DOM_FIND = {
+  gameTmp_listItem : ".gameTmp_listItem",
+  gameTmp_title    : ".gameTmp_title",
+  gameTmp_img      : ".gameTmp_img",
+}
+
+const JQ_CLASSes = {
+};
+for (let cl of Object.keys(JQ_CLASSes)) {
+  JQ_IDs[cl] = $(`.${cl}`);
 }
 //#endregion DOM ELEMENTS
 
@@ -25,31 +40,40 @@ let username = "";
 let collection = [];
 
 function buildUpUser(username) {
-  console.log("building FB for user", username)
+  username = username.toLowerCase();
+  console.log("building up user", username)
   localStorage.setItem(LOCAL_STORAGE_VARS.username, username);
   thisUsersRef = userNamesRef.child(username);
-  thisUsersRef.child("coll").on("child_added"  , listenForAddGame   );
-  thisUsersRef.child("coll").on("child_removed", listenForRemoveGame);
+  thisUsersRef.child("coll"    ).on("child_added"  , listenForAddGame    );
+  thisUsersRef.child("coll"    ).on("child_removed", listenForRemoveGame );
+  thisUsersRef.child("myEvents").on("child_added"  , listenForAddEvent   );
+  thisUsersRef.child("myEvents").on("child_removed", listenForRemoveEvent);
 }
 
 function tearDownUser() {
   console.log("tearing down user");
-  thisUsersRef && thisUsersRef.child("coll").off("child_added", listenForAddGame);
-  thisUsersRef && thisUsersRef.child("coll").off("child_removed", listenForRemoveGame);
+  if (thisUsersRef) {
+    thisUsersRef.child("coll"    ).off("child_added"  , listenForAddGame    );
+    thisUsersRef.child("coll"    ).off("child_removed", listenForRemoveGame );
+    thisUsersRef.child("myEvents").off("child_added"  , listenForAddEvent   );
+    thisUsersRef.child("myEvents").off("child_removed", listenForRemoveEvent);
+  }
   thisUsersRef = null;
   localStorage.removeItem(LOCAL_STORAGE_VARS.username);
   username = "";
 }
 
 function checkFBforName(name) {
+  name = name.toLowerCase();
   return userNamesRef.once("value").then(snap => {
     return snap.child(name).exists();
   });
 }
 
 //#region SIGN-IN/OUT
-// Login / Sign-up
+//* Login / Sign-up
 function signIn(name) {
+  name = name.toLowerCase();
   console.log("Sign in/up as", name);
   checkFBforName(name).then(doesExist => {
     // Regardless if this is a previous user, we need the FB user node
@@ -63,11 +87,12 @@ function signIn(name) {
       console.log("adding user to FB")
       // Sign them up!
       thisUsersRef.set({signUpAt: firebase.database.ServerValue.TIMESTAMP }); // give them a persistent data node to make sure they stay in the db
+      console.log("Visual: make sure events and collections show +add+ entries")
     }
   });
 }
 
-// Signout
+//* Signout
 function signOut() {
   // Remove name & collection from local storage
   localStorage.clear();
@@ -133,7 +158,7 @@ function searchBGG(gameTitle) {
     else {
       // TODO: visuals
       console.log("VISUAL: add results to screen");
-      console.log("!!imp - add data attr for bggid");
+      //! TODO: add data attr for bggid
     }
   });
 }
@@ -202,10 +227,23 @@ function removeGameFromCollectionByID(id) {
 
 //* Listeners
 function listenForAddGame(args) {
-  console.log("heard you wanted to add a game", args.val());
+  const val = args.val();
+  console.log("heard you wanted to add a game", val);
+
+  // Build clone
+  let $clone = JQ_IDs.gameTemplate.clone().contents();
+  $clone.find(DOM_FIND.gameTmp_img).attr({
+    src: val.thumbnailURL,
+  });
+  $clone.find(DOM_FIND.gameTmp_title).text(val.name);
+  $clone.attr({"data-bggid" : val.id});
+
+  JQ_IDs.collectionList.prepend($clone);
 }
 function listenForRemoveGame(args) {
-  console.log("heard you wanted to remove a game", args.val());
+  const val = args.val();
+  console.log("heard you wanted to remove a game", val, val.id);
+  $(DOM_FIND.gameTmp_listItem).filter(`[data-bggid=${val.id}]`).remove();
 }
 //#endregion GAMES COLLECTION
 
@@ -218,7 +256,7 @@ function populateEventsFromFB(userRef) {
     const val = dataSnap.val();
     if (!val){
       console.log("user has no events on FB");
-      console.log("VISUAL?: show where to add/join events")
+      console.log("VISUAL?: show where to add/join events");
       return;
     } else {
       console.log("user has events on FB", val);
@@ -228,14 +266,14 @@ function populateEventsFromFB(userRef) {
   });
 }
 
-//* Add to Events List
-function addEvent() {
+//* Create an Event
+function creatEvent() {
   //TODO: get data from FORM
   console.log("add event to list");
 
   // Add to Firebase 
   let newEventRef = thisUsersRef.child("myEvents").push();
-  const eventUID = newEventRef.key.slice(-6).toUpperCASE();
+  const eventUID = newEventRef.key.slice(-6).toUpperCase();
   newEventRef.remove();
   const eventObj = {
     created: firebase.database.ServerValue.TIMESTAMP,
@@ -245,28 +283,39 @@ function addEvent() {
     */
   };
   eventsRef.child(eventUID).set(eventObj);
+  thisUsersRef.child("myEvents").child(eventUID).set(eventObj);
+  //? TODO: make this safer to make sure the event was added to ref list, before adding it to user ref
   //? Update local var 
   // collection.push(gameObj);
   //? Update local storage 
   // localStorage.setItem(LOCAL_STORAGE_VARS.collection, JSON.stringify(collection));
-
-  // let testManualGameObj = {
-    // id          : item.$.id,
-    // description : item.description,
-    // thumbnailURL: item.thumbnail,
-    // minage      : item.minage.$.value,
-    // minplayers  : item.minplayers.$.value,
-    // maxplayer   : item.maxplayers.$.value,
-    // minplaytime : item.minplaytime.$.value,
-    // maxplaytime : item.maxplaytime.$.value,
-    // playingtime : item.playingtime.$.value,
-    // weight      : item.statistics.ratings.averageweight.$.value,
-  // };
 }
+
 
 //TODO: edit event
 //TODO: click/goto event
 //TODO: join event
+
+//* Listeners
+function listenForAddEvent(args) {
+  const val = args.val();
+  console.log("heard you wanted to add an event", val);
+
+  //! TODO: CPR
+  // Build clone
+//   let $clone = JQ_IDs.gameTemplate.clone().contents();
+//   $clone.find(DOM_FIND.gameTmp_img).attr({
+//     src: val.thumbnailURL,
+//   });
+//   $clone.find(DOM_FIND.gameTmp_title).text(val.name);
+//   $clone.attr("data-bggid", val.id);
+
+//   JQ_IDs.collectionList.prepend($clone);
+// }
+}
+function listenForRemoveEvent(args) {
+  console.log("heard you wanted to remove a game", args.val());
+}
 //#endregion EVENTS
 
 

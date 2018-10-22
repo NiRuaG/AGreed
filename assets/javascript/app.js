@@ -16,8 +16,6 @@ let BGG_API = {
     const $params = $.param(BGG_API.config.params);
     const queryURL = `${host}${BGG_API.config.path}?${$params}`;
 
-    let result = null;
-
     return $.ajax({
       // url: "https://httpstat.us/202",
       url: queryURL,
@@ -123,8 +121,13 @@ let BGG_API = {
           gameInfos = [gameInfos]; // force to an array (of 1 item)
         }
         let mapped = gameInfos.map(item => {
+          // sometimes the name has results in different languages
+          if (!Array.isArray(item.name)) {
+            item.name = [item.name];
+          }
           return {
             id          : item.$.id,
+            name        : item.name[0].$.value,
             description : item.description,
             imageURL    : item.image,
             thumbnailURL: item.thumbnail,
@@ -158,18 +161,27 @@ let BGG_API = {
     // #endregion Example Response
 
     return BGG_API._getAjax()
-      .then(function(searchResults) {
-        // console.log(searchResults.items.item);
-        let ids="";
-        searchResults.items.item.forEach( item => {
-          ids += item.$.id+","
-        });
-        return ids;
+      .then(function (searchResults) {
+        // console.log(searchResults);
+        if (searchResults.items.$.total !== "0") {
+          // console.log("BGG API/ajax/searchResults", searchResults.items.item);
+          let ids = "";
+          searchResults.items.item.forEach(item => {
+            ids += item.$.id + ","
+          });
+          return ids;
+        }
+        else { // no results
+          return null; // no ids to forward
+        }
       })
-      .then(function(gameIDs) {
-        return BGG_API.getGameInfoById(gameIDs);
+      .then(function (gameIDs) {
+        if (gameIDs)
+          return BGG_API.getGameInfoById(gameIDs);
+        else // no results, no ids => empty array
+          return [];
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log("Error @ searchForGameByName", error);
       });
   }
