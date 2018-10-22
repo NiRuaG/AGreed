@@ -13,33 +13,68 @@
 </head>
 
 <body>
-  //div for google maps
-  <div id="map"></div>
-
   <div class="grid-x grid-margin-x">
     <ul class="vertical menu cell medium-2">
       <li class="circularThumbnail"></li>
       <br>
-      <li>USERNAME</li>
-      <input id="signup_bggUserName" type="text" placeholder="Existing BoardGameGeek Username">
+      <span id="username"></span>
       <li><a href="#">Link to something maybe</a></li>
       <li><a href="#">Something else..placeholder</a></li>
     </ul>
     <!-- Event page for clicked event -->
-    <div id="" class="cell medium-5">
-      <h
+    <div class="cell medium-10">
+      <h2 id="eventName"></h2>
+      <!-- thumbnail? | details(date, address(+maps), # of people, desc-->
+      <!-- <div class="eventPageThumbnail thumbnail">
+        <img id="eventImage" src="assets/images/eventThumbnail.png" alt="Temporary event thumbnail">
+      </div> -->
+      <div class="callout">
+        <h4>Event Code: <span id="eventCode"></span></h4>
+        <h4>Address: <span id="eventAddr"></span></h4>
+        <h4>Date of fun: <span id="eventDate"></span> | Number of People Invited: <span id="eventNumInvite"></span></h4>
+        <h4>Description:</h4>
+        <h5 id="eventDescript"></h5>
+        <!-- //div for google maps
+          <div id="map"></div> -->
+      </div>
+      <h2>VOOOTTEEE before <span id="voteDeadline"></span></h2>
+      <div class="callout">
+        <p><button class="button" data-open="votingModal">Submit Game to Vote</button></p>
+        <div class="gameTmp_listItem thumbnail collectionThumbnail tooltip">
+          <p class="gameTmp_title">Template Title</p>
+          <img class="gameTmp_img" src="./assets/images/Collection1.jpg">
+        </div>
+        <div class="gameTmp_listItem thumbnail collectionThumbnail tooltip">
+          <p class="gameTmp_title">Template Title</p>
+          <img class="gameTmp_img" src="./assets/images/Collection2.jpg">
+        </div>
+        <div class="gameTmp_listItem thumbnail collectionThumbnail tooltip">
+          <p class="gameTmp_title">Template Title</p>
+          <img class="gameTmp_img" src="./assets/images/Collection3.jpg">
+        </div>
+      </div>
+    </div>
+  </div>
 
-
+  <div class="small reveal" id="votingModal" data-reveal>
+    <button class="close-button" data-close aria-label="Close reveal" type="button">
+      <span aria-hidden="true">&times;</span>
+    </button>  
   </div>
 
   <!-- <input -->
-  <script src="Foundation-6.4.2/js/vendor/jquery.js"></script>
-  <script src="Foundation-6.4.2/js/vendor/what-input.js"></script>
-  <script src="Foundation-6.4.2/js/vendor/foundation.min.js"></script>
-  <script>$(document).foundation();</script>
-  <script src="https://www.gstatic.com/firebasejs/5.5.4/firebase.js"></script>
-  <script src="assets/javascript/xml2json.js"></script>
-  <script src="assets/javascript/app.js"></script>
+  <div id="added sources and pages">
+    <script src="Foundation-6.4.2/js/vendor/jquery.js"></script>
+    <script src="Foundation-6.4.2/js/vendor/what-input.js"></script>
+    <script src="Foundation-6.4.2/js/vendor/foundation.min.js"></script>
+    <script>$(document).foundation();</script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.4/firebase.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js'></script>
+    <script src="assets/javascript/firebase.js"></script>
+    <script src="assets/javascript/xml2json.js"></script>
+    <script src="assets/javascript/app.js"></script>
+    <script src="assets/javascript/events.js"></script>
+  </div>
 </body>
 
 </html>

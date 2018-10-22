@@ -1,4 +1,4 @@
-// $(document).ready(() => {
+$(document).ready(() => {
 "use strict";
 console.log("LOGIN READY!");
 
@@ -7,6 +7,9 @@ const JQ_IDs = {
   username   : null,
   signin_btn : null,
   signout_btn: null,
+
+  bggLinkForm  : null,
+  bggLink_input: null,
 
   loginModal     : null,
   loginForm      : null,
@@ -18,7 +21,12 @@ const JQ_IDs = {
   eventName  : null,
   eventDate  : null,
   eventAddressFull : null,
+  eventNumInvites : null,
+  eventDescrip : null,
   event_submit: null,
+
+  joinEventForm : null,
+  joinEvent_input : null,
 
   collectionList : null,
       eventsList : null,
@@ -35,9 +43,11 @@ const DOM_FIND = {
   gameTmp_title    : ".gameTmp_title",
   gameTmp_img      : ".gameTmp_img",
 
-  eventTmp_title : ".eventTmp_title",
-  eventTmp_date  : ".eventTmp_date",
-  eventTmp_addr  : ".eventTmp_addr",
+  eventTmp_listItem : ".eventTmp_listItem",
+  eventTmp_title    : ".eventTmp_title",
+  eventTmp_date     : ".eventTmp_date",
+  eventTmp_addr     : ".eventTmp_addr",
+  eventTemp_joinID  : ".eventTemp_joinID",
 }
 
 // const JQ_CLASSes = {
@@ -54,37 +64,63 @@ let    eventsRef = database.ref("/events");
 let thisUsersRef = null;
 
 eventsRef.on("child_removed", removedChild => {
-  console.log("event from main list removed", removedChild);
-  //TODO: look through my events to see if they need removing
+  console.log("an event from the main list was removed", removedChild, removedChild.key);
+  if (thisUsersRef){
+    thisUsersRef.child("myEvents").once("value").then(snap => {
+      if (snap.child(removedChild.key).exists()) {
+        console.log("I was was part of that event");
+        thisUsersRef.child(`myEvents/${removedChild.key}`).remove();
+      }
+    });
+  }
 });
 
 // Page-local variables
-let username = "";
-let collection = [];
+let thisUsername = "";
+let thisBggname = "";
+// let collection = [];
 
 function buildUpUser(username) {
   // Page-Local Variables
-  username = username.toLowerCase();
-  console.log("building up user", username)
+  thisUsername = username.toLowerCase();
+  console.log("building up user", thisUsername)
 
   // Local Storage
-  localStorage.setItem(LOCAL_STORAGE_VARS.username, username);
+  localStorage.setItem(LOCAL_STORAGE_VARS.username, thisUsername);
 
   // Firebase
-  thisUsersRef = userNamesRef.child(username);
+  thisUsersRef = userNamesRef.child(thisUsername);
+  //  check for bgglink
+  thisUsersRef.once("value").then(snap => {
+    if(snap.child("bggname").exists()){
+      // Firebase has this bgglink account
+      console.log("bggname exists in FB");
+      thisBggname = snap.child("bggname").val();
+      localStorage.setItem(LOCAL_STORAGE_VARS.bggname, thisBggname);
+      JQ_IDs.bggLink_input.val(thisBggname);
+    } else {
+      console.log("no bggname for this user on FB")
+      localStorage.removeItem(LOCAL_STORAGE_VARS.bggname);
+    }
+  });
   thisUsersRef.child("coll"    ).on("child_added"  , listenForAddGame    );
   thisUsersRef.child("coll"    ).on("child_removed", listenForRemoveGame );
   thisUsersRef.child("myEvents").on("child_added"  , listenForAddEvent   );
   thisUsersRef.child("myEvents").on("child_removed", listenForRemoveEvent);
 
   // DOM Elements
-  JQ_IDs.username.text(username);
+  JQ_IDs.username.text(thisUsername);
   JQ_IDs.signin_btn.hide();
   JQ_IDs.signout_btn.show();
 }
 
 function tearDownUser() {
   console.log("tearing down user");
+
+  // DOM Elements
+  JQ_IDs.username.empty();
+  JQ_IDs.signin_btn.show();
+  JQ_IDs.signout_btn.hide();
 
   // Firebase
   if (thisUsersRef) {
@@ -93,16 +129,14 @@ function tearDownUser() {
     thisUsersRef.child("myEvents").off("child_added"  , listenForAddEvent   );
     thisUsersRef.child("myEvents").off("child_removed", listenForRemoveEvent);
   }
+  thisUsersRef = null;
 
   // Local Storage
-  thisUsersRef = null;
-  localStorage.removeItem(LOCAL_STORAGE_VARS.username);
-  username = "";
+  localStorage.clear();
 
-  // DOM Elements
-  JQ_IDs.username.empty();
-  JQ_IDs.signin_btn.show();
-  JQ_IDs.signout_btn.hide();
+  // Page-Local Variables
+  thisUsername = "";
+  thisBggname = "";
 }
 
 function checkFBforName(name) {
@@ -139,10 +173,10 @@ function signOut() {
   // Remove name & collection from local storage
   localStorage.clear();
   tearDownUser();
-  collection = [];
+  // collection = [];
 
-  // TODO: Clear elements on page
-  //  - profile image
+  // Clear elements on page
+  //TODO:  - clear profile image
   //  - collection list
   JQ_IDs.collectionList.empty();
   //  - events list
@@ -152,22 +186,36 @@ function signOut() {
 
 
 //#region BGG-LINK
-let BGGAccount = "";
-// Link to BG
-function linkToBGG() {
+//* Link to BG
+function linkToBGG(bggname) {
+  thisBggname = bggname.toLowerCase();
   console.log("linking to BGG");
-  localStorage.setItem(LOCAL_STORAGE_VARS.bggname, BGGAccount);
-  thisUsersRef.update({ BGG: BGGAccount });
-  // TODO: what else?
+  BGG_API.checkUserName(thisBggname).then( bggIDResult => {
+    if(!bggIDResult){
+      console.log("could not find bgg user account", thisBggname);
+      //TODO: visual that it failed
+    }
+    else {
+      thisUsersRef.update({ bggname: thisBggname });
+      localStorage.setItem(LOCAL_STORAGE_VARS.bggname, thisBggname);
+      BGG_API.getUsersOwnedCollection(thisBggname).then( collectionResults => {
+        console.log("this is their collection found", collectionResults);
+        thisUsersRef.child("coll").remove();
+        collectionResults.forEach(gameObj => {
+          addGameToCollectionByID(gameObj.id);
+        });
+      });
+    }
+  });
 }
-// Resync with BGG
-function resyncWithBGG() {
-  console.log("resyncing with BGG");
-  localStorage.setItem(LOCAL_STORAGE_VARS.bggname, BGGAccount);
-  thisUsersRef.update({ BGG: BGGAccount });
-  // TODO: clear FB and local storage coll
-  // TODO: API call 
-}
+////// Resync with BGG
+//// function resyncWithBGG() {
+////   console.log("resyncing with BGG");
+////   localStorage.getItem(LOCAL_STORAGE_VARS.bggname, BGGAccount);
+////   // thisUsersRef.update({ BGG: BGGAccount });
+////   // TODO: clear FB and local storage coll
+////   // TODO: API call 
+//// }
 //#endregion BGG-LINK
 
 
@@ -199,7 +247,7 @@ function searchBGG(gameTitle) {
     }
     else {
       // TODO: visuals
-      console.log("VISUAL: add results to screen");
+      console.log("VISUAL: add results to modal");
       //! TODO: add data attr for bggid
     }
   });
@@ -209,14 +257,24 @@ function searchBGG(gameTitle) {
 function addGameToCollectionByID(id) {
   console.log("add game to collection by id", id);
 
-  BGG_API.getGameInfoById(id).then(gameObjArray => {
-    const gameObj = gameObjArray[0];
-    // Add to Firebase 
-    thisUsersRef.child("coll").push(gameObj);
-    // Update local var 
-    collection.push(gameObj);
-    // Update local storage 
-    localStorage.setItem(LOCAL_STORAGE_VARS.collection, JSON.stringify(collection));
+  // Check if user has this in their collection already
+  thisUsersRef.child('coll')
+    .orderByChild('id').equalTo(id)
+    .once("value").then(snap => { 
+      if (!snap.val()) {
+        // new game, add to collection
+        BGG_API.getGameInfoById(id).then(gameObjArray => {
+          const gameObj = gameObjArray[0];
+          // Add to Firebase 
+          thisUsersRef.child("coll").push(gameObj);
+          //// Update local var 
+          //// collection.push(gameObj);
+          //// Update local storage 
+          ////localStorage.setItem(LOCAL_STORAGE_VARS.collection, JSON.stringify(collection));
+        });
+      } else {
+        console.log("user already has this game in their collection");
+      }
   });
 }
 
@@ -258,7 +316,6 @@ function removeGameFromCollectionByID(id) {
     .orderByChild('id').equalTo(id)
     .once("value").then(snap => { 
       const val = snap.val();
-      // console.log("snap val", Object.keys(val)[0]);
       thisUsersRef.child(`coll/${Object.keys(val)[0]}`).remove()
       .then( remvRes => {
         console.log("remove succeeded", remvRes);
@@ -268,16 +325,22 @@ function removeGameFromCollectionByID(id) {
 
 //* Listeners
 function listenForAddGame(args) {
-  const val = args.val();
+  let val = args.val();
   console.log("heard you wanted to add a game", val);
 
   // Build clone
   let $clone = JQ_IDs.gameTemplate.clone().contents();
+  if (!val.thumbnailURL) {
+    val.thumbnailURL = "https://via.placeholder.com/100x100";
+  }
   $clone.find(DOM_FIND.gameTmp_img).attr({
     src: val.thumbnailURL,
+    alt: val.name,
   });
   $clone.find(DOM_FIND.gameTmp_title).text(val.name);
-  $clone.attr({"data-bggid" : val.id});
+  $clone.attr({
+    'data-bggid' : val.id,
+  });
 
   JQ_IDs.collectionList.prepend($clone);
 }
@@ -321,11 +384,12 @@ function creatEvent(eventObj) {
   //? Update local var, local storage 
 }
 
-//TODO: edit event
+//TODO: edit event 
+//TODO: remove event
 
-//TODO: click/goto event
+//TODO: click/goto event 
 
-//TODO: join event
+//* Join Event 
 function joinEventByID(eventID) {
   eventID = eventID.toUpperCase();
   console.log("joining event by id", eventID);
@@ -339,11 +403,13 @@ function joinEventByID(eventID) {
         const event = snap.child(eventID);
         if (event.exists()) {
           console.log("FB events has this ID", event, event.key, event.val());
-          thisUsersRef.child("myEvents").child(event.key).set(event.val());
-          console.log("copied to my events");
+          thisUsersRef.child("myEvents").child(event.key).set(true);
+          console.log("added to my events");
           //? TODO: link to set()'s success
         } else {
           console.log("FB doesn't know this ID");
+          console.log("notify user can't find event");
+          //TODO: visual alert user that can't find event ID
         }
       });
     }
@@ -351,26 +417,33 @@ function joinEventByID(eventID) {
 }
 
 //* Listeners
-function listenForAddEvent(args) {
-  const val = args.val();
-  console.log("heard you wanted to add an event of mine", val, args.key);
+  function listenForAddEvent(args) {
+    console.log("heard you wanted to add an event of mine", args.key);
 
-  // Build an Event clone
-  let $clone = JQ_IDs.eventTemplate.clone().contents();
-  const dateWFormat = moment(val.data).format("dddd, MMMM Do");
+    // Get the details from Events Ref
+    eventsRef.child(`${args.key}/details`).once("value").then( snapDetails => {
+      const details = snapDetails.val();
+      // Build an Event clone
+      let $clone = JQ_IDs.eventTemplate.clone().contents();
+      const dateWFormat = moment(details.date).format("dddd, MMMM Do");
 
-  $clone.attr({
-    "event-id": args.key,
-  });
-  $clone.find(DOM_FIND.eventTmp_title).text(val.name);
-  $clone.find(DOM_FIND.eventTmp_date).text(dateWFormat);
-  $clone.find(DOM_FIND.eventTmp_addr).text(val.address);
+      $clone.find(DOM_FIND.eventTmp_title)
+        .text(details.name)
+        .attr({
+          "data-event-id": args.key,
+          "href": `./events.html?id=${args.key}`,
+        });
+      $clone.find(DOM_FIND.eventTmp_date).text(dateWFormat);
+      $clone.find(DOM_FIND.eventTmp_addr).text(details.address);
+      $clone.find(DOM_FIND.eventTemp_joinID).text(args.key);
 
-  JQ_IDs.eventsList.prepend($clone);
-}
+      JQ_IDs.eventsList.prepend($clone);
+    });
+  }
 
 function listenForRemoveEvent(args) {
-  console.log("heard you wanted to remove my event", args.val());
+  console.log("heard you wanted to remove my event", args.val(), args.key);
+  $(DOM_FIND.eventTmp_listItem).find(`[data-event-id=${args.key}]`).remove();
 }
 //#endregion EVENTS
 
@@ -401,7 +474,9 @@ JQ_IDs.eventForm.submit(function(event) {
   let eventName_input = JQ_IDs.eventName.val().trim();
   let eventDate_input = JQ_IDs.eventDate.val().trim();
   let eventAddr_input = JQ_IDs.eventAddressFull.val().trim();
-  console.log(eventName_input,eventDate_input,eventAddr_input);
+  let eventDesc_input = JQ_IDs.eventDescrip.val().trim();
+  let eventNumInvites_input = JQ_IDs.eventNumInvites.val().trim();
+  console.log(eventName_input, eventDate_input, eventAddr_input, eventDesc_input, eventNumInvites_input);
 
   JQ_IDs.eventName.val("");
   JQ_IDs.eventDate.val("");
@@ -411,14 +486,55 @@ JQ_IDs.eventForm.submit(function(event) {
   }
   
   creatEvent({
-    name: eventName_input,
-    date: eventDate_input,
-    address: eventAddr_input
+    details: {
+      name: eventName_input,
+      date: eventDate_input,
+      address: eventAddr_input,
+      description: eventDesc_input,
+      inviteCount: eventNumInvites_input,
+    }
   });
   
   JQ_IDs.eventAddressFull.val("");
+  JQ_IDs.eventDescrip    .val("");
+  JQ_IDs.eventNumInvites .val("");
   JQ_IDs.eventModal.foundation('close');
   
+  return false;
+});
+
+JQ_IDs.joinEventForm.submit(function(event) {
+  console.log("submitting join event!");
+  event.preventDefault();
+
+  let eventCode_input = JQ_IDs.joinEvent_input.val().trim().toUpperCase();
+
+  console.log(eventCode_input);
+
+  JQ_IDs.joinEvent_input.val("");
+  if (!eventCode_input){
+    //? TODO: validate/notify 
+    return false;
+  }
+
+  joinEventByID(eventCode_input);
+});
+
+JQ_IDs.bggLinkForm.submit(function(event) {
+  console.log("submitting bgg link!");
+  event.preventDefault();
+
+  let bggname_input = JQ_IDs.bggLink_input.val().trim();
+  console.log(bggname_input);
+
+  JQ_IDs.bggLink_input.val("");
+  if (!bggname_input){
+    //? TODO: notify we need name
+    return false;
+  }
+
+  linkToBGG(bggname_input)
+
   return false;
 });
 
@@ -427,19 +543,35 @@ JQ_IDs.signin_btn.click(function(event){
 });
 JQ_IDs.signout_btn.click(signOut);
 
+$(document).on("click", DOM_FIND.eventTmp_title, function(event) {
+  const eventID = $(this).data("event-id");
+  console.log("re-directing to event!", eventID);
+  event.preventDefault();
+
+  if (!eventID){
+    console.log("there was no eventID");
+    // TODO: visual error .. and probably remove from list
+    return;
+  }
+  else {
+    // localStorage.setItem(LOCAL_STORAGE_VARS.eventID, eventID);
+    window.location.href = `./events?id=${eventID}.html`;
+  }
+});
 //#endregion SUBMITS / CLICKS
 
 
 // #region START OF EXECUTION
 // Check Local Storage for username
-username = localStorage.getItem(LOCAL_STORAGE_VARS.username);
-if (username) {
-  console.log("local storage has a name", username);
-  checkFBforName(username).then(doesExist => {
+thisUsername = localStorage.getItem(LOCAL_STORAGE_VARS.username);
+if (thisUsername) {
+  thisUsername = thisUsername.toLowerCase();
+  console.log("local storage has a name", thisUsername);
+  checkFBforName(thisUsername).then(doesExist => {
     console.log("user existence in FB? ", doesExist);
     if (doesExist) {
       // Firebase knows this name
-      buildUpUser(username);
+      buildUpUser(thisUsername);
       // populateCollectionFromFB(thisUsersRef); 
       // populateEventsFromFB(thisUsersRef);
     } else {
@@ -449,7 +581,7 @@ if (username) {
   });
 }
 
-if (!username) { // using if (instead of else) in order to also catch invalid localstorage from above
+if (!thisUsername) { // using if (instead of else) in order to also catch invalid localstorage from above
   console.log("local storage has no name");
   JQ_IDs.signin_btn.show();
   JQ_IDs.signout_btn.hide();
@@ -457,6 +589,19 @@ if (!username) { // using if (instead of else) in order to also catch invalid lo
   JQ_IDs.loginModal.foundation('open');
 }
 
+thisBggname = localStorage.getItem(LOCAL_STORAGE_VARS.bggname);
+if (thisBggname) {
+  thisBggname = thisBggname.toLowerCase();
+  console.log("local storage has a bgg name", thisBggname);
+}
+
+if (!thisBggname) { // using if (instead of else) in order to also catch invalid localstorage from above
+  console.log("local storage has no bggname");
+  // JQ_IDs.signin_btn.show();
+  // JQ_IDs.signout_btn.hide();
+  //? TODO: localStorage.clear(); //? clear other local storage? this correct, necessary to do?
+  // JQ_IDs.loginModal.foundation('open');
+}
 //#endregion START OF EXECUTION
 
-// });
+});
