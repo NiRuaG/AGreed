@@ -1,7 +1,8 @@
 const LOCAL_STORAGE_VARS = {
   username: "username",
   bggname: "bggname",
-  collection: "coll",
+  ////collection: "coll",
+  eventID: "eventID",
 };
 
 // https://boardgamegeek.com/wiki/page/BGG_XML_API2
@@ -64,7 +65,7 @@ let BGG_API = {
       let mapped = collectionObj.items.item.map( item => {
         return {
           name        : item.name._,
-          objectid    : item.$.objectid,
+          id          : item.$.objectid,
           imageURL    : item.image,
           thumbnailURL: item.thumbnail
         };
