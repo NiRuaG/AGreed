@@ -9,52 +9,105 @@
   <link rel="stylesheet" href="Foundation-6.4.2/css/foundation.css">
   <link rel="stylesheet" href="assets/css/style.css">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script src="assets/javascript/xml2json.js"></script>
 </head>
 
 <body>
-  <a href="#" data-open="loginModal">Click Me For A Modal</a>
-  <div id="loginModal" class="reveal-modal" data-reveal role="dialog">
+  <div class="reveal" id="loginModal" data-reveal role="dialog">
     <h1>WELCOME</h1>
     <form id="loginForm">
       <div class="grid-container">
         <div class="grid-x grid-padding-x">
           <div class="medium-6">
-            <label>Unique Username
+            <label>Username
               <input id="login_userName" type="text" placeholder="Unique Username">
             </label>
           </div>
-          <!--! Don't need BGG in this part -->
-          <!-- <div class="medium-6">
-            <label>(
-              <input id="signup_bggUserName" type="text" placeholder="Existing BoardGameGeek Username">
-            </label>
-          </div> -->
-          <input class="button expanded large-down-expanded" id="login_submit" type="submit" href="#" value="Login / Sign-Up">
+          <input class="button expanded large-down-expanded" id="login_submit" type="submit" value="Login / Sign-Up">
         </div>
       </div>
     </form>
     <!-- <button class="close-button" data-close aria-label="Close modal" type="button"> -->
     <!-- <span aria-hidden="true">&times;</span> -->
-    <!-- </button> -->
+    </button>
   </div>
 
-  <div class="grid-x">
+  <main class="grid-x grid-margin-x">
     <ul class="vertical menu cell medium-2">
       <li class="circularThumbnail"></li>
       <br>
-      <li>USERNAME</li>
+      <span id="username"></span>
+      <button id="signout_btn" class="button">Sign Out</button>
+      <button id="signin_btn" class="button">Sign In</button>
       <li><a href="#">Link to something maybe</a></li>
       <li><a href="#">Something else..placeholder</a></li>
     </ul>
-    <div class="events cell medium-10">
+
+    <!-- Area regarding the events and personalized collection of games -->
+    <section id="eventsSection" class="cell medium-5">
       <h3>Events</h3>
+      <a class="eventModal" href="#" data-open="eventModal">Create an Event</a>
+      <div id="eventModal" class="reveal" data-reveal>
+        <h1>Create an Event</h1>
+        <form id="eventForm">
+          <div class="grid-container">
+            <div class="grid-x grid-padding-x">
+              <div class="medium-12">
+                <label>Event Name
+                  <input id="eventName" type="text" placeholder="Event Name">
+                </label>
+              </div>
+              <div class="medium-12">
+                <label>Event Location
+                  <input id="eventAddressFull" type="text" placeholder="Address, City, State Zip">
+                </label>
+              </div>
+              <div class="medium-12">
+                <label>Event Date
+                  <input id="eventDate" type="date" placeholder="MM/DD/YY">
+                </label>
+              </div>
+              <input class="button expanded large-down-expanded" id="event_submit" type="submit" href="#" value="Create Event">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div id="eventsList">
+          <!-- dynamic fill events go here -->
+      </div>
+      <div id="eventTemplate">
+        <div class="eventTmp_listItem media-object stack-for-small">
+          <div class="eventThumbnail thumbnail">
+            <img id="eventImage" src="assets/images/eventThumbnail.png" alt="Temporary event thumbnail">
+          </div>
+          <div class="eventDetails">
+            <h5 class="eventTmp_title">The Best Event Title Ever</h5>
+            <p class="eventTmp_date">Some Date</p>
+            <p class="eventTmp_addr">Some Address</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="collectionSection" class="cell medium-5">
       <h3>My Collection</h3>
-      <p>Highly Recommended! <a href="boardgamegeek.com">boardgamegeek.com</a></p>
-      <!-- colleciton items go here -->
-      <ul id="collectionList"></ul>
-    </div>
-  </div>
+      <div class="bggLink">
+        <input id="signup_bggUserName" type="text" placeholder="Existing BoardGameGeek Username">
+        <a href="https://boardgamegeek.com" target="_blank">
+          <img class="" src="assets/images/BGG_Logo.png">
+        </a>
+      </div>
+      <!-- add collections button -->
+      <ul id="collectionList">
+          <!-- dynamic collection items go here -->
+      </ul>
+      <div id="gameTemplate">
+        <li class="gameTmp_listItem thumbnail collectionThumbnail">
+          <!-- <p class="gameTmp_title">Template Title</p> -->
+          <img class="gameTmp_img" src="./assets/images/Collection1.jpg">
+        </li>
+      </div>
+    </section>
+  </main>
 
   <div id="added sources and pages">
     <script src="Foundation-6.4.2/js/vendor/jquery.js"></script>
@@ -62,6 +115,7 @@
     <script src="Foundation-6.4.2/js/vendor/foundation.min.js"></script>
     <script>$(document).foundation();</script>
     <script src="https://www.gstatic.com/firebasejs/5.5.4/firebase.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js'></script>
     <script src="assets/javascript/firebase.js"></script>
     <script src="assets/javascript/xml2json.js"></script>
     <script src="assets/javascript/app.js"></script>
