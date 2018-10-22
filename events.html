@@ -40,18 +40,28 @@
       <h2>VOOOTTEEE before <span id="voteDeadline"></span></h2>
       <div class="callout">
         <p><button class="button" data-open="votingModal">Submit Game to Vote</button></p>
-        <div class="gameTmp_listItem thumbnail collectionThumbnail tooltip">
-          <p class="gameTmp_title">Template Title</p>
-          <img class="gameTmp_img" src="./assets/images/Collection1.jpg">
+        <h3>submissions:</h3>
+        <div id="submissionsList">
+            <!-- dynamic submission items go here -->
         </div>
-        <div class="gameTmp_listItem thumbnail collectionThumbnail tooltip">
-          <p class="gameTmp_title">Template Title</p>
-          <img class="gameTmp_img" src="./assets/images/Collection2.jpg">
-        </div>
-        <div class="gameTmp_listItem thumbnail collectionThumbnail tooltip">
-          <p class="gameTmp_title">Template Title</p>
-          <img class="gameTmp_img" src="./assets/images/Collection3.jpg">
-        </div>
+            <!-- <div class="gameTmp_listItem thumbnail collectionThumbnail tooltip">
+                <p class="gameTmp_title">Template Title</p>
+                <img class="gameTmp_img" src="./assets/images/Collection1.jpg">
+              </div>
+              <div class="gameTmp_listItem thumbnail collectionThumbnail tooltip">
+                <p class="gameTmp_title">Template Title</p>
+                <img class="gameTmp_img" src="./assets/images/Collection2.jpg">
+              </div>
+              <div class="gameTmp_listItem thumbnail collectionThumbnail tooltip">
+                <p class="gameTmp_title">Template Title</p>
+                <img class="gameTmp_img" src="./assets/images/Collection3.jpg">
+              </div> -->
+        <template id="submissionTemplate">
+          <li class="gameTmp_listItem thumbnail collectionThumbnail tooltip">
+              <p class="gameTmp_title"></p>
+              <img class="gameTmp_img" src="./assets/images/Collection1.jpg">
+          </li>
+        </template>
       </div>
     </div>
   </div>

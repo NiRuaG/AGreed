@@ -14,12 +14,19 @@
       eventDescript: null,
 
       voteDeadline: null,
+
+      submissionsList: null,
+
+      submissionTemplate: null,
     };
     for (let id of Object.keys(JQ_IDs)) {
       JQ_IDs[id] = $(`#${id}`);
     }
     
     const DOM_FIND = {
+      gameTmp_listItem : ".gameTmp_listItem",
+      gameTmp_title: ".gameTmp_title",
+      gameTmp_img: ".gameTmp_img",
     }
     
     //// const JQ_CLASSes = {
@@ -104,7 +111,15 @@ function fetchUsersCollection() {
 
 // #region SUBMISSIONS
 function addSubmissionToEvent(submitObj) {
-  thisEventRef.child("submissions").push(submitObj);
+  let exampleObj1 = thisUsersCollection[0];
+  let exampleObj2 = thisUsersCollection[1];
+  let exampleObj3 = thisUsersCollection[2];
+  let exampleObj4 = thisUsersCollection[3];
+  console.log(exampleObj1);
+  thisEventRef.child("submissions").push(exampleObj1);
+  thisEventRef.child("submissions").push(exampleObj2);
+  thisEventRef.child("submissions").push(exampleObj3);
+  thisEventRef.child("submissions").push(exampleObj4);
 }
 
 //* Listeners
@@ -112,35 +127,38 @@ function listenForAddSubmit(args) {
   let val = args.val();
   console.log("heard you wanted to add a submission", val);
 
-  //! BUILD CLONE
-  // let $clone = JQ_IDs.gameTemplate.clone().contents();
-  // if (!val.thumbnailURL) {
-  //   val.thumbnailURL = "https://via.placeholder.com/100x100";
-  // }
-  // $clone.find(DOM_FIND.gameTmp_img).attr({
-  //   src: val.thumbnailURL,
-  //   alt: val.name,
-  // });
-  // $clone.find(DOM_FIND.gameTmp_title).text(val.name);
-  // $clone.attr({
-  //   'data-bggid' : val.id,
-  // });
+  let $clone = JQ_IDs.submissionTemplate.clone().contents();
+  if (!val.thumbnailURL) {
+    val.thumbnailURL = "https://via.placeholder.com/100x100";
+  }
+  $clone.find(DOM_FIND.gameTmp_img).attr({
+    src: val.thumbnailURL,
+    alt: val.name,
+  });
+  $clone.find(DOM_FIND.gameTmp_title).text(val.name);
+  $clone.attr({
+    'data-bggid' : val.id,
+  });
 
-  // JQ_IDs.collectionList.prepend($clone);
+  JQ_IDs.submissionsList.prepend($clone);
 }
 
 function listenForRemoveSubmit(args) {
   const val = args.val();
   console.log("heard you wanted to remove a submission", val, val.id);
-  //! Search and Destory
-  // $(DOM_FIND.gameTmp_listItem).filter(`[data-bggid=${val.id}]`).remove();
+  $(DOM_FIND.gameTmp_listItem).filter(`[data-bggid=${val.id}]`).remove();
 }
 // #endregion SUBMISSIONS
 
 
     //#region SUBMITS & CLICKS
+    //* Votings
+//! $(document).on("click", DOM_FIND.eventTmp_title, function(event) {
+// });
+//* Submissions
+
     //#endregion SUBMITS & CLICKS
-    
+
 
     // #region START OF EXECUTION
     //* Check for valid username and valid event
@@ -156,7 +174,7 @@ if (!thisUsername) {
     if (namesSnap.child(thisUsername).exists()) {
       console.log("user exists in FB");
 
-      //* now check for event id in query
+      //* check for event id in query
       let urlQueries = {};
       $.each(document.location.search.substr(1).split('&'), function(c, q) {
         var i = q.split('=');
