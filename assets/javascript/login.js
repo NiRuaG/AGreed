@@ -7,6 +7,7 @@ const JQ_IDs = {
   username   : null,
   signin_btn : null,
   signout_btn: null,
+  createEventBtn : null,
 
   bggLinkForm  : null,
   bggLink_input: null,
@@ -16,6 +17,7 @@ const JQ_IDs = {
   login_userName : null,
   login_submit   : null,
 
+  eventsSection : null,
   eventModal : null,
   eventForm  : null,
   eventName  : null,
@@ -28,6 +30,7 @@ const JQ_IDs = {
   joinEventForm : null,
   joinEvent_input : null,
 
+  collectionSection :null,
   collectionList : null,
       eventsList : null,
 
@@ -37,6 +40,8 @@ const JQ_IDs = {
 for (let id of Object.keys(JQ_IDs)) {
   JQ_IDs[id] = $(`#${id}`);
 }
+
+
 
 const DOM_FIND = {
   gameTmp_listItem : ".gameTmp_listItem",
@@ -112,6 +117,9 @@ function buildUpUser(username) {
   JQ_IDs.username.text(thisUsername);
   JQ_IDs.signin_btn.hide();
   JQ_IDs.signout_btn.show();
+  JQ_IDs.eventsSection.show();
+  JQ_IDs.collectionSection.show();
+  JQ_IDs.createEventBtn.show();
 }
 
 function tearDownUser() {
@@ -121,6 +129,10 @@ function tearDownUser() {
   JQ_IDs.username.empty();
   JQ_IDs.signin_btn.show();
   JQ_IDs.signout_btn.hide();
+  JQ_IDs.bggLink_input.val("");
+  JQ_IDs.eventsSection.hide();
+  JQ_IDs.collectionSection.hide();
+  JQ_IDs.createEventBtn.hide();
 
   // Firebase
   if (thisUsersRef) {
@@ -445,6 +457,15 @@ function joinEventByID(eventID) {
       $clone.find(DOM_FIND.eventTemp_joinID).text(args.key);
 
       JQ_IDs.eventsList.prepend($clone);
+
+      console.log($clone[0]);
+      var cssSelector = anime({
+        targets: $clone[0],
+        translateY: 100,
+        delay: 500,
+        loop: true,
+        direction: 'alternate'
+      });
     });
   }
 

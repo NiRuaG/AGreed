@@ -5,6 +5,7 @@
     //#region DOM ELEMENTS
     const JQ_IDs = {
       username: null,
+      signout_btn : null,
 
       eventName: null,
       eventCode: null,
@@ -183,6 +184,12 @@ function listenForRemoveSubmit(args) {
 
 
     //#region SUBMITS & CLICKS
+    //* Sign Out
+    JQ_IDs.signout_btn.click(function(event){
+      tearDownEvent();
+      window.location.href = `./index.html`;
+    });
+
     //* Votings
 $(document).on("click", `#myVotedList ${DOM_FIND.gameTmp_listItem}`, function(event) {
   let $this = $(this);
