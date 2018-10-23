@@ -17,8 +17,11 @@
 
           myVotedList : null,
       submissionsList : null,
+
+          votingModal : null,
        collectionList : null,
-       chosenGames : null,
+          chosenGames : null,
+          doneSubmit  : null,
 
       submissionTemplate: null,
     };
@@ -44,6 +47,7 @@
     let userNamesRef = database.ref("/usernames");
     let    eventsRef = database.ref("/events");
     let thisEventRef = null;
+    let thisUsersRef = null;
     
     // Page-local variables
     let thisUsername = "";
@@ -52,6 +56,7 @@
     let thisUsersCollection = [];
 
     let myVoteCount = 0;
+    //// let mySubmitCount = 0;
 
 function buildUpEvent(eventID, eventObj) {
   // Page-Local Variables
@@ -67,11 +72,11 @@ function buildUpEvent(eventID, eventObj) {
   thisEventRef = eventsRef.child(thisEventID);
   thisEventRef.child("submissions").on("child_added"  , listenForAddSubmit   );
   thisEventRef.child("submissions").on("child_removed", listenForRemoveSubmit);
-  // thisUsersRef.child("myEvents").on("child_added", listenForAddEvent);
-  // thisUsersRef.child("myEvents").on("child_removed", listenForRemoveEvent);
+  thisUsersRef = userNamesRef.child(thisUsername);
 
   // DOM Elements
   JQ_IDs.username.text(thisUsername);
+
   JQ_IDs.eventName.text(thisEventObj.details.name);
   JQ_IDs.eventCode.text(eventID);
   JQ_IDs.eventAddr.text(thisEventObj.details.address);
@@ -79,6 +84,7 @@ function buildUpEvent(eventID, eventObj) {
   JQ_IDs.eventNumInvite.text(thisEventObj.details.inviteCount);
   JQ_IDs.eventDate     .text(m$eventDate.format("dddd, MMMM Do"));
   JQ_IDs.eventDescript .text(thisEventObj.details.description);
+
   JQ_IDs.voteDeadline  .text(m$eventDate.subtract(1, "days").format("ddd MMM Do"));
   codeAddress();
 }
@@ -87,12 +93,14 @@ function tearDownEvent() {
   console.log("tearing down event");
 
   // DOM Elements
-  JQ_IDs.username      .empty();
+  //? JQ_IDs.username      .empty();
+
   JQ_IDs.eventCode     .empty();
   JQ_IDs.eventAddr     .empty();
   JQ_IDs.eventDate     .empty();
   JQ_IDs.eventNumInvite.empty();
   JQ_IDs.eventDescript .empty();
+
   JQ_IDs.voteDeadline  .empty();
 
   // Firebase
@@ -100,6 +108,8 @@ function tearDownEvent() {
     thisEventRef.child("submissions").off("child_added"  , listenForAddSubmit   );
     thisEventRef.child("submissions").off("child_removed", listenForRemoveSubmit);
   }
+  thisEventRef = null;
+  thisUsersRef = null;
 
   // Local Storage
   localStorage.removeItem(LOCAL_STORAGE_VARS.eventID);
@@ -109,6 +119,7 @@ function tearDownEvent() {
   thisEventID  = "";
   thisEventObj = null;
   myVoteCount = 0;
+  mySubmitCount = 0;
 }
 
 
@@ -134,7 +145,7 @@ function fetchUsersCollection() {
   userNamesRef.child(`${thisUsername}/coll`).once("value").then( collSnap => {
     thisUsersCollection = collSnap.val() && Object.values(collSnap.val());
     thisUsersCollection.forEach( gameObj => {
-      JQ_IDs.collectionList.append(buildGameClone(gameObj));
+      JQ_IDs.collectionList.prepend(buildGameClone(gameObj));
     });
   });
 }
@@ -154,23 +165,8 @@ function addSubmissionToEvent(submitObj) {
 
 //* Listeners
 function listenForAddSubmit(args) {
-  let val = args.val();
+  const val = args.val();
   console.log("heard you wanted to add a submission", val);
-
-
-  // let $clone = JQ_IDs.submissionTemplate.clone().contents();
-  // if (!val.thumbnailURL) {
-  //   val.thumbnailURL = "https://via.placeholder.com/100x100";
-  // }
-  // $clone.find(DOM_FIND.gameTmp_img).attr({
-  //   src: val.thumbnailURL,
-  //   alt: val.name,
-  // });
-  // $clone.find(DOM_FIND.gameTmp_title).text(val.name);
-  // $clone.attr({
-  //   'data-bggid' : val.id,
-  // });
-
   JQ_IDs.submissionsList.prepend(buildGameClone(val));
 }
 
@@ -192,13 +188,14 @@ $(document).on("click", `#myVotedList ${DOM_FIND.gameTmp_listItem}`, function(ev
 
 });
 $(document).on("click", `#submissionsList ${DOM_FIND.gameTmp_listItem}`, function(event) {
-  if (myVoteCount === 3) { 
+  let $this = $(this);
+  console.log("clicking to vote on:", $this);
+
+  if (myVoteCount >= 3) { 
     console.log("can't vote more than 3");
     //TODO: visual alert of not more than 3
     return; 
   }
-  let $this = $(this);
-  console.log("clicking to vote on:", $this);
   JQ_IDs.myVotedList.append(this);
   ++myVoteCount;
 });
@@ -207,18 +204,30 @@ $(document).on("click", `#submissionsList ${DOM_FIND.gameTmp_listItem}`, functio
 $(document).on("click", `#collectionList ${DOM_FIND.gameTmp_listItem}`, function(event) {
   console.log("adding a game of mine as submission");
   JQ_IDs.chosenGames.append(this);
-  // localStorage.setItem(submission1, JSON.string)
-  //TODO: keep their submissions if they got out of the modal
+  //? TODO: limit submission count
 });
 
 $(document).on("click", `#chosenGames ${DOM_FIND.gameTmp_listItem}`, function(event) {
   console.log("removing a game of mine as submission");
   JQ_IDs.collectionList.prepend(this);
 });
+
+JQ_IDs.doneSubmit.click(function(event) {
+  console.log("done submitting");
+  
+  JQ_IDs.chosenGames.find(DOM_FIND.gameTmp_listItem).each( (index_, value) => {
+    const $value = $(value);
+    console.log($value.data('bggid'));
+    // addSubmissionToEvent()
+  });
+  JQ_IDs.votingModal.foundation('close');
+});
     //#endregion SUBMITS & CLICKS
 
 
     // #region START OF EXECUTION
+    
+
     //* Check for valid username and valid event
 thisUsername = localStorage.getItem(LOCAL_STORAGE_VARS.username);
 if (!thisUsername) {
@@ -227,42 +236,47 @@ if (!thisUsername) {
 } else {
   thisUsername = thisUsername.toLowerCase();
   console.log("local storage has username", thisUsername);
-  // Check FB for user
+  
+  //* check this name with firebase
   userNamesRef.once("value").then(namesSnap => {
     if (namesSnap.child(thisUsername).exists()) {
       console.log("user exists in FB");
-
-      //* check for event id in query
-      let urlQueries = {};
-      $.each(document.location.search.substr(1).split('&'), function(c, q) {
-        var i = q.split('=');
-        urlQueries[i[0].toString()] = i[1].toString();
-      });
-
-      if (!urlQueries.hasOwnProperty('id')) {
-        console.log("url does not have event id");
-        //! TODO: visual to go back to profile page to select an event
-      } else {
-        thisEventID = urlQueries.id.toUpperCase();
-        console.log("local storage has event id", thisEventID);
-        // Check FB for event ID
-        eventsRef.once("value").then(snap => {
-          if (snap.child(thisEventID).exists()) {
-            console.log("event exists in FB");
-            // Firebase knows this event
-            buildUpEvent(thisEventID, snap.child(thisEventID).val());
-            fetchUsersCollection();
-          } else {
-            console.log("event doesn't exist in FB");
-            tearDownEvent();
-          }
-        });
-      }
+      checkForEvent()
     } else {
       console.log("user doesn't exist in FB");
       //! todo: visual to say please sign back in on index page
     }
   });
+}
+
+function checkForEvent() {
+  //* check for event id in query
+  let urlQueries = {};
+  $.each(document.location.search.substr(1).split('&'), function (c, q) {
+    var i = q.split('=');
+    urlQueries[i[0].toString()] = i[1].toString();
+  });
+
+  if (!urlQueries.hasOwnProperty('id')) {
+    console.log("url does not have event id");
+    //! TODO: visual to go back to profile page to select an event
+  } else {
+    thisEventID = urlQueries.id.toUpperCase();
+    console.log("local storage has event id", thisEventID);
+    // Check FB for event ID
+    eventsRef.once("value").then(snap => {
+      if (snap.child(thisEventID).exists()) {
+        console.log("event exists in FB");
+        // Firebase knows this event
+        //? TODO: check that user has joined this event
+        buildUpEvent(thisEventID, snap.child(thisEventID).val());
+        fetchUsersCollection();
+      } else {
+        console.log("event doesn't exist in FB");
+        tearDownEvent();
+      }
+    });
+  }
 }
     //#endregion START OF EXECUTION
     
@@ -288,8 +302,7 @@ function codeAddress() {
   }
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
    //pulls address from a hypothetical address input box; will need to have it pull from applicable event 
-   console.log(thisEventObj.details.address);
-  var address = thisEventObj.details.address
+  var address = `${thisEventObj.details.address} chicago, il`;
   geocoder.geocode( { 'address': address}, function(results, status) {
     if (status == 'OK') {
       map.setCenter(results[0].geometry.location);
