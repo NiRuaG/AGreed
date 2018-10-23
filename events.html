@@ -74,24 +74,22 @@
     <button class="close-button" data-close aria-label="Close reveal" type="button">
       <span aria-hidden="true">&times;</span>
     </button>
-    <form>
       <div class="grid-container">
-        <!-- <div class="grid-x grid-padding-x"> -->
-        <div>STICKY DIV WHERE CHOSEN GAMES GO</div>
-        <div id="collectionList"></div>
-        <nav aria-label="Pagination">
-          <ul class="pagination">
-            <li class="pagination-previous disabled"> <span class="show-for-sr">page</span></li>
-            <li class="current"><span class="show-for-sr">You're on page</span> 1</li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li class="pagination-next"><a href="#"> <span class="show-for-sr">page</span></a></li>
-          </ul>
-        </nav>
-        <input class="button expanded large-down-expanded" type="submit" value="I'm done adding games">
+        <div class="grid-x grid-padding-x">
+          <div class="cell medium-12" id="gameSelection">
+            <h5>To the Pool!</h5>
+            <div id="chosenGames">
+              <!-- js inserts -->
+            </div>
+            <button class="button expanded large-down-expanded">I'm done adding games</button>
+          </div>
+        <div class="cell medium-12">
+          <h5>My Collection</h5>
+          <div id="collectionList">
+            <!-- js inserts -->
+          </div>
+        </div>
       </div>
-    </form>
   </div>
 
   <!-- <input -->
