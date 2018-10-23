@@ -4,9 +4,6 @@ body {
   background-color: black;
 }
 
-#profilePic {
-}
-
 .grid-x {
   margin: 0 1% 0 1%;
 }
@@ -98,9 +95,7 @@ h2, h3 {
 }
 
 .collectionThumbnail {
-  border-width: 1px;
-  border-color: black;
-  width: 25%;
+  max-width: 30%;
   margin: 0 1% 2% 1%;
 }
 
@@ -118,11 +113,15 @@ h2, h3 {
   background-color:black;
   text-align: center;
   padding: 0.2rem 0.3rem;
-  border-radius: 6px;
+  /* border-radius: 6px; */
   word-wrap: normal;
   font-size: 0.7rem;
 
   position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.6;
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
@@ -145,4 +144,30 @@ h2, h3 {
 #map {
   height: 300px;
   width: 300px;
+}
+
+#votingModal {
+  height: 40rem;
+  max-height: 100%;
+  padding-top: 0;
+}
+
+#gameSelection {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+}
+
+#votingModal #collectionList {
+  overflow: auto;
+}
+
+#collectionList {
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: flex-end;
 }

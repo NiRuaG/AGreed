@@ -41,30 +41,6 @@
       <li><a href="#">Link to something maybe</a></li>
       <li><a href="#">Something else..placeholder</a></li>
     </ul>
-
-    <!-- Area regarding the events and personalized collection of games -->
-    <section id="collectionSection" class="cell medium-6">
-        <h3>My Collection</h3>
-        <div class="bggLink">
-          <form id="bggLinkForm">
-            <input id="bggLink_input" type="text" placeholder="Existing BoardGameGeek Username">
-          </form>
-          <a href="https://boardgamegeek.com" target="_blank">
-            <img class="" src="assets/images/BGG_Logo.png">
-          </a>
-        </div>
-        <!-- add collections button -->
-        <ul id="collectionList">
-            <!-- dynamic collection items go here -->
-        </ul>
-        <template id="gameTemplate">
-          <li class="gameTmp_listItem thumbnail collectionThumbnail tooltip">
-              <p class="gameTmp_title">Template Title</p>
-              <img class="gameTmp_img" src="./assets/images/Collection1.jpg">
-          </li>
-        </template>
-    </section>
-
     <section id="eventsSection" class="cell medium-4">
       <h3>Events</h3>
       <a class="eventModal" href="#" data-open="eventModal">Create an Event</a>
@@ -72,10 +48,10 @@
         <input id="joinEvent_input" type="text" placeholder="Join Event by CODE">
       </form>
       <div id="eventsList">
-          <!-- dynamic fill events go here -->
+        <!-- dynamic fill events go here -->
       </div>
       <template id="eventTemplate">
-        <div class="eventTmp_listItem media-object stack-for-small">
+        <div class="eventTmp_listItem stack-for-small">
           <div class="eventThumbnail thumbnail">
             <img id="eventImage" src="assets/images/eventThumbnail.png" alt="Temporary event thumbnail">
           </div>
@@ -88,43 +64,67 @@
         </div>
       </template>
     </section>
+    <!-- Area regarding the events and personalized collection of games -->
+    <section id="collectionSection" class="cell medium-6">
+      <h3>My Collection</h3>
+      <div class="bggLink">
+        <form id="bggLinkForm">
+          <input id="bggLink_input" type="text" placeholder="Existing BoardGameGeek Username">
+        </form>
+        <a href="https://boardgamegeek.com" target="_blank">
+          <img class="" src="assets/images/BGG_Logo.png">
+        </a>
+      </div>
+      <!-- add collections button -->
+      <ul id="collectionList">
+        <!-- dynamic collection items go here -->
+      </ul>
+      <template id="gameTemplate">
+        <li class="gameTmp_listItem collectionThumbnail tooltip">
+          <p class="gameTmp_title">Template Title</p>
+          <img class="gameTmp_img" src="./assets/images/Collection1.jpg">
+        </li>
+      </template>
+    </section>
+
+
   </main>
 
 
   <div id="eventModal" class="reveal" data-reveal>
-      <h1>Create an Event</h1>
-      <form id="eventForm">
-        <div class="grid-container">
-          <div class="grid-x grid-padding-x">
-            <div class="medium-12">
-              <label>Event Name
-                <input id="eventName" type="text" placeholder="Event Name">
-              </label>
-            </div>
-            <div class="medium-12">
-              <label>Date
-                <input id="eventDate" type="date" placeholder="MM/DD/YY">
-              </label>
-            </div>
-            <div class="medium-12">
-                <label>Location
-                  <input id="eventAddressFull" type="text" placeholder="Address, City, State Zip">
-                </label>
-            </div>
-            <div class="medium-12">
-                <label>Hopeful # of Invitees
-                  <input id="eventNumInvites" type="number" placeholder="0">
-                </label>
-            </div>
-            <div class="medium-12">
-                <label>Event Description
-                  <textarea id ="eventDescript" placeholder="None"></textarea>
-                </label>
-            </div>
-            <input class="button expanded large-down-expanded" id="event_submit" type="submit" href="#" value="Create Event">
+    <h1>Create an Event</h1>
+    <form id="eventForm">
+      <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+          <div class="medium-12">
+            <label>Event Name
+              <input id="eventName" type="text" placeholder="Event Name">
+            </label>
           </div>
+          <div class="medium-12">
+            <label>Date
+              <input id="eventDate" type="date" placeholder="MM/DD/YY">
+            </label>
+          </div>
+          <div class="medium-12">
+            <label>Location
+              <input id="eventAddressFull" type="text" placeholder="Address, City, State Zip">
+            </label>
+          </div>
+          <div class="medium-12">
+            <label>Hopeful # of Invitees
+              <input id="eventNumInvites" type="number" placeholder="0">
+            </label>
+          </div>
+          <div class="medium-12">
+            <label>Event Description
+              <textarea id="eventDescript" placeholder="None"></textarea>
+            </label>
+          </div>
+          <input class="button expanded large-down-expanded" id="event_submit" type="submit" href="#" value="Create Event">
         </div>
-      </form>
+      </div>
+    </form>
   </div>
 
   <div id="added sources and pages">

@@ -18,6 +18,7 @@
           myVotedList : null,
       submissionsList : null,
        collectionList : null,
+       chosenGames : null,
 
       submissionTemplate: null,
     };
@@ -132,8 +133,9 @@ function fetchUsersCollection() {
   if (!thisUsername) { return; }
   userNamesRef.child(`${thisUsername}/coll`).once("value").then( collSnap => {
     thisUsersCollection = collSnap.val() && Object.values(collSnap.val());
-
-    // JQ_IDs.collectionList.append()
+    thisUsersCollection.forEach( gameObj => {
+      JQ_IDs.collectionList.append(buildGameClone(gameObj));
+    });
   });
 }
 
@@ -189,8 +191,6 @@ $(document).on("click", `#myVotedList ${DOM_FIND.gameTmp_listItem}`, function(ev
   JQ_IDs.submissionsList.prepend(this);
 
 });
-
-//* Submissions
 $(document).on("click", `#submissionsList ${DOM_FIND.gameTmp_listItem}`, function(event) {
   if (myVoteCount === 3) { 
     console.log("can't vote more than 3");
@@ -201,6 +201,19 @@ $(document).on("click", `#submissionsList ${DOM_FIND.gameTmp_listItem}`, functio
   console.log("clicking to vote on:", $this);
   JQ_IDs.myVotedList.append(this);
   ++myVoteCount;
+});
+
+//* Submissions
+$(document).on("click", `#collectionList ${DOM_FIND.gameTmp_listItem}`, function(event) {
+  console.log("adding a game of mine as submission");
+  JQ_IDs.chosenGames.append(this);
+  // localStorage.setItem(submission1, JSON.string)
+  //TODO: keep their submissions if they got out of the modal
+});
+
+$(document).on("click", `#chosenGames ${DOM_FIND.gameTmp_listItem}`, function(event) {
+  console.log("removing a game of mine as submission");
+  JQ_IDs.collectionList.prepend(this);
 });
     //#endregion SUBMITS & CLICKS
 
