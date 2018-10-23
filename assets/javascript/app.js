@@ -117,7 +117,7 @@ let BGG_API = {
     return BGG_API._getAjax()
       .then(function (thingObj) {
         let gameInfos = thingObj.items.item;
-        // console.log("thingobj: ", gameInfos);
+        console.log("thingobj: ", gameInfos);
         if (!Array.isArray(gameInfos)){
           gameInfos = [gameInfos]; // force to an array (of 1 item)
         }
