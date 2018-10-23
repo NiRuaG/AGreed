@@ -213,7 +213,8 @@ function linkToBGG(bggname) {
       BGG_API.getUsersOwnedCollection(thisBggname).then( collectionResults => {
         console.log("this is their collection found", collectionResults);
         thisUsersRef.child("coll").remove();
-        collectionResults.forEach(gameObj => {
+        // reverse collection (which will be alpha sorted) because usually adding a single game is by prepend
+        collectionResults.reverse().forEach(gameObj => {
           addGameToCollectionByObj(gameObj);
           //// addGameToCollectionByID(gameObj.id);
         });

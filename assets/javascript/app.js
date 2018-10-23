@@ -134,7 +134,7 @@ let BGG_API = {
             thumbnailURL: item.thumbnail,
             minage      : item.minage.$.value,
             minplayers  : item.minplayers.$.value,
-            maxplayer   : item.maxplayers.$.value,
+            maxplayers  : item.maxplayers.$.value,
             minplaytime : item.minplaytime.$.value,
             maxplaytime : item.maxplaytime.$.value,
             playingtime : item.playingtime.$.value,
