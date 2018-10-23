@@ -15,7 +15,9 @@
 
       voteDeadline: null,
 
-      submissionsList: null,
+          myVotedList : null,
+      submissionsList : null,
+       collectionList : null,
 
       submissionTemplate: null,
     };
@@ -48,11 +50,14 @@
     let thisEventObj = null;
     let thisUsersCollection = [];
 
+    let myVoteCount = 0;
+
 function buildUpEvent(eventID, eventObj) {
   // Page-Local Variables
   thisEventID = eventID.toUpperCase();
   thisEventObj = eventObj;
   console.log("building up event", thisEventID, eventObj);
+  myVoteCount = 0;
 
   // Local Storage
   localStorage.setItem(LOCAL_STORAGE_VARS.eventID, thisEventID);
@@ -66,31 +71,19 @@ function buildUpEvent(eventID, eventObj) {
 
   // DOM Elements
   JQ_IDs.username.text(thisUsername);
-  JQ_IDs.eventName.text(eventObj.details.name);
+  JQ_IDs.eventName.text(thisEventObj.details.name);
   JQ_IDs.eventCode.text(eventID);
-  JQ_IDs.eventAddr.text(eventObj.details.address);
-  const m$eventDate = moment(eventObj.details.date);
-  JQ_IDs.eventNumInvite.text(eventObj.details.inviteCount);
+  JQ_IDs.eventAddr.text(thisEventObj.details.address);
+  const m$eventDate = moment(thisEventObj.details.date);
+  JQ_IDs.eventNumInvite.text(thisEventObj.details.inviteCount);
   JQ_IDs.eventDate     .text(m$eventDate.format("dddd, MMMM Do"));
-  JQ_IDs.eventDescript .text(eventObj.details.description);
+  JQ_IDs.eventDescript .text(thisEventObj.details.description);
   JQ_IDs.voteDeadline  .text(m$eventDate.subtract(1, "days").format("ddd MMM Do"));
+  codeAddress();
 }
 
 function tearDownEvent() {
   console.log("tearing down event");
-
-  // Firebase
-  if (thisEventRef) {
-    thisEventRef.child("submissions").off("child_added"  , listenForAddSubmit   );
-    thisEventRef.child("submissions").off("child_removed", listenForRemoveSubmit);
-  }
-
-  thisUsername = "";
-  thisEventID  = "";
-  thisEventObj = null;
-
-  // Local Storage
-  localStorage.removeItem(LOCAL_STORAGE_VARS.eventID);
 
   // DOM Elements
   JQ_IDs.username      .empty();
@@ -100,12 +93,47 @@ function tearDownEvent() {
   JQ_IDs.eventNumInvite.empty();
   JQ_IDs.eventDescript .empty();
   JQ_IDs.voteDeadline  .empty();
+
+  // Firebase
+  if (thisEventRef) {
+    thisEventRef.child("submissions").off("child_added"  , listenForAddSubmit   );
+    thisEventRef.child("submissions").off("child_removed", listenForRemoveSubmit);
+  }
+
+  // Local Storage
+  localStorage.removeItem(LOCAL_STORAGE_VARS.eventID);
+
+  // Page-Local Variables
+  thisUsername = "";
+  thisEventID  = "";
+  thisEventObj = null;
+  myVoteCount = 0;
+}
+
+
+function buildGameClone(gameObj) {
+  let $clone = JQ_IDs.submissionTemplate.clone().contents();
+  if (!gameObj.thumbnailURL) {
+    gameObj.thumbnailURL = "https://via.placeholder.com/100x100";
+  }
+  $clone.find(DOM_FIND.gameTmp_img).attr({
+    src: gameObj.thumbnailURL,
+    alt: gameObj.name,
+  });
+  $clone.find(DOM_FIND.gameTmp_title).text(gameObj.name);
+  $clone.attr({
+    'data-bggid' : gameObj.id,
+  });
+
+  return $clone;
 }
 
 function fetchUsersCollection() {
   if (!thisUsername) { return; }
   userNamesRef.child(`${thisUsername}/coll`).once("value").then( collSnap => {
     thisUsersCollection = collSnap.val() && Object.values(collSnap.val());
+
+    // JQ_IDs.collectionList.append()
   });
 }
 
@@ -127,20 +155,21 @@ function listenForAddSubmit(args) {
   let val = args.val();
   console.log("heard you wanted to add a submission", val);
 
-  let $clone = JQ_IDs.submissionTemplate.clone().contents();
-  if (!val.thumbnailURL) {
-    val.thumbnailURL = "https://via.placeholder.com/100x100";
-  }
-  $clone.find(DOM_FIND.gameTmp_img).attr({
-    src: val.thumbnailURL,
-    alt: val.name,
-  });
-  $clone.find(DOM_FIND.gameTmp_title).text(val.name);
-  $clone.attr({
-    'data-bggid' : val.id,
-  });
 
-  JQ_IDs.submissionsList.prepend($clone);
+  // let $clone = JQ_IDs.submissionTemplate.clone().contents();
+  // if (!val.thumbnailURL) {
+  //   val.thumbnailURL = "https://via.placeholder.com/100x100";
+  // }
+  // $clone.find(DOM_FIND.gameTmp_img).attr({
+  //   src: val.thumbnailURL,
+  //   alt: val.name,
+  // });
+  // $clone.find(DOM_FIND.gameTmp_title).text(val.name);
+  // $clone.attr({
+  //   'data-bggid' : val.id,
+  // });
+
+  JQ_IDs.submissionsList.prepend(buildGameClone(val));
 }
 
 function listenForRemoveSubmit(args) {
@@ -153,10 +182,26 @@ function listenForRemoveSubmit(args) {
 
     //#region SUBMITS & CLICKS
     //* Votings
-//! $(document).on("click", DOM_FIND.eventTmp_title, function(event) {
-// });
-//* Submissions
+$(document).on("click", `#myVotedList ${DOM_FIND.gameTmp_listItem}`, function(event) {
+  let $this = $(this);
+  console.log("clicking to REMOVE vote on:", $this);
+  --myVoteCount;
+  JQ_IDs.submissionsList.prepend(this);
 
+});
+
+//* Submissions
+$(document).on("click", `#submissionsList ${DOM_FIND.gameTmp_listItem}`, function(event) {
+  if (myVoteCount === 3) { 
+    console.log("can't vote more than 3");
+    //TODO: visual alert of not more than 3
+    return; 
+  }
+  let $this = $(this);
+  console.log("clicking to vote on:", $this);
+  JQ_IDs.myVotedList.append(this);
+  ++myVoteCount;
+});
     //#endregion SUBMITS & CLICKS
 
 
@@ -218,24 +263,24 @@ if (!thisUsername) {
 //pull down and display thumbnail for 
 
 
-// Google Maps API
 var geocoder;
 var map;
 
 function codeAddress() {  
-  geocoder = new google.maps.Geocoder();
+  let geocoder = new google.maps.Geocoder();
   var latlng = null;
-  mapOptions = {
+  let mapOptions = {
     zoom: 4,
     center: latlng
   }
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
-   //pulls address from a hypothetical address input box; will need to have it pull from applicable event
-  var address = document.getElementById('address').value; // var address = address of event
+   //pulls address from a hypothetical address input box; will need to have it pull from applicable event 
+   console.log(thisEventObj.details.address);
+  var address = thisEventObj.details.address
   geocoder.geocode( { 'address': address}, function(results, status) {
     if (status == 'OK') {
       map.setCenter(results[0].geometry.location);
-      map.setZoom(12)
+      map.setZoom(16)
       var marker = new google.maps.Marker({
           map: map,
           position: results[0].geometry.location

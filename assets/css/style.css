@@ -4,7 +4,8 @@ body {
   background-color: black;
 }
 
-
+#profilePic {
+}
 
 .grid-x {
   margin: 0 1% 0 1%;
@@ -20,13 +21,14 @@ body {
 .circularThumbnail {
   width: 200px;
   height: 200px;
+  max-width: 100%;
   border-radius: 50%;
   /* margin: 10% 0 0 10%; */
   /* padding: 0 0 0 0; */
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   background: url("../images/Thumbnail_Potatoe.jpg") no-repeat 50%;
-  max-width: 100%;
+  cursor: pointer;
 }
 
 #eventsSection,
@@ -138,4 +140,9 @@ h2, h3 {
 
 #eventDescript {
   margin-left: 2rem;
+}
+
+#map {
+  height: 300px;
+  width: 300px;
 }

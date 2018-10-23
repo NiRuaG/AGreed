@@ -22,7 +22,7 @@ const JQ_IDs = {
   eventDate  : null,
   eventAddressFull : null,
   eventNumInvites : null,
-  eventDescrip : null,
+  eventDescript : null,
   event_submit: null,
 
   joinEventForm : null,
@@ -202,7 +202,8 @@ function linkToBGG(bggname) {
         console.log("this is their collection found", collectionResults);
         thisUsersRef.child("coll").remove();
         collectionResults.forEach(gameObj => {
-          addGameToCollectionByID(gameObj.id);
+          addGameToCollectionByObj(gameObj);
+          //// addGameToCollectionByID(gameObj.id);
         });
       });
     }
@@ -254,6 +255,12 @@ function searchBGG(gameTitle) {
 }
 
 //* Add to Game Collection
+function addGameToCollectionByObj(gameObj) {
+  console.log("add game to collection by obj", gameObj);
+
+  thisUsersRef.child("coll").push(gameObj);
+}
+
 function addGameToCollectionByID(id) {
   console.log("add game to collection by id", id);
 
@@ -474,7 +481,7 @@ JQ_IDs.eventForm.submit(function(event) {
   let eventName_input = JQ_IDs.eventName.val().trim();
   let eventDate_input = JQ_IDs.eventDate.val().trim();
   let eventAddr_input = JQ_IDs.eventAddressFull.val().trim();
-  let eventDesc_input = JQ_IDs.eventDescrip.val().trim();
+  let eventDesc_input = JQ_IDs.eventDescript.val().trim();
   let eventNumInvites_input = JQ_IDs.eventNumInvites.val().trim();
   console.log(eventName_input, eventDate_input, eventAddr_input, eventDesc_input, eventNumInvites_input);
 
@@ -496,7 +503,7 @@ JQ_IDs.eventForm.submit(function(event) {
   });
   
   JQ_IDs.eventAddressFull.val("");
-  JQ_IDs.eventDescrip    .val("");
+  JQ_IDs.eventDescript   .val("");
   JQ_IDs.eventNumInvites .val("");
   JQ_IDs.eventModal.foundation('close');
   
@@ -543,21 +550,21 @@ JQ_IDs.signin_btn.click(function(event){
 });
 JQ_IDs.signout_btn.click(signOut);
 
-$(document).on("click", DOM_FIND.eventTmp_title, function(event) {
-  const eventID = $(this).data("event-id");
-  console.log("re-directing to event!", eventID);
-  event.preventDefault();
+// $(document).on("click", DOM_FIND.eventTmp_title, function(event) {
+//   const eventID = $(this).data("event-id");
+//   console.log("re-directing to event!", eventID);
+//   // event.preventDefault();
 
-  if (!eventID){
-    console.log("there was no eventID");
-    // TODO: visual error .. and probably remove from list
-    return;
-  }
-  else {
-    // localStorage.setItem(LOCAL_STORAGE_VARS.eventID, eventID);
-    window.location.href = `./events?id=${eventID}.html`;
-  }
-});
+//   if (!eventID){
+//     console.log("there was no eventID");
+//     // TODO: visual error .. and probably remove from list
+//     return;
+//   }
+//   else {
+//     // localStorage.setItem(LOCAL_STORAGE_VARS.eventID, eventID);
+//     // window.location.href = `./events?id=${eventID}.html`;
+//   }
+// });
 //#endregion SUBMITS / CLICKS
 
 
