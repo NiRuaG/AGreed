@@ -1,6 +1,6 @@
 $(document).ready(() => {
 "use strict";
-console.log("LOGIN READY!");
+// console.log("LOGIN READY!");
 
 //#region DOM ELEMENTS
 const JQ_IDs = {
@@ -69,11 +69,11 @@ let    eventsRef = database.ref("/events");
 let thisUsersRef = null;
 
 eventsRef.on("child_removed", removedChild => {
-  console.log("an event from the main list was removed", removedChild, removedChild.key);
+  // console.log("an event from the main list was removed", removedChild, removedChild.key);
   if (thisUsersRef){
     thisUsersRef.child("myEvents").once("value").then(snap => {
       if (snap.child(removedChild.key).exists()) {
-        console.log("I was was part of that event");
+        // console.log("I was was part of that event");
         thisUsersRef.child(`myEvents/${removedChild.key}`).remove();
       }
     });
@@ -88,7 +88,7 @@ let thisBggname = "";
 function buildUpUser(username) {
   // Page-Local Variables
   thisUsername = username.toLowerCase();
-  console.log("building up user", thisUsername)
+  // console.log("building up user", thisUsername)
 
   // Local Storage
   localStorage.setItem(LOCAL_STORAGE_VARS.username, thisUsername);
@@ -99,12 +99,12 @@ function buildUpUser(username) {
   thisUsersRef.once("value").then(snap => {
     if(snap.child("bggname").exists()){
       // Firebase has this bgglink account
-      console.log("bggname exists in FB");
+      // console.log("bggname exists in FB");
       thisBggname = snap.child("bggname").val();
       localStorage.setItem(LOCAL_STORAGE_VARS.bggname, thisBggname);
       JQ_IDs.bggLink_input.val(thisBggname);
     } else {
-      console.log("no bggname for this user on FB")
+      // console.log("no bggname for this user on FB");
       localStorage.removeItem(LOCAL_STORAGE_VARS.bggname);
     }
   });
@@ -123,7 +123,7 @@ function buildUpUser(username) {
 }
 
 function tearDownUser() {
-  console.log("tearing down user");
+  // console.log("tearing down user");
 
   // DOM Elements
   JQ_IDs.username.empty();
@@ -162,20 +162,20 @@ function checkFBforName(name) {
 //* Login / Sign-up
 function signIn(name) {
   name = name.toLowerCase();
-  console.log("Sign in/up as", name);
+  // console.log("Sign in/up as", name);
   checkFBforName(name).then(doesExist => {
     // Regardless if this is a previous user, we need the FB user node
     buildUpUser(name);
     if (doesExist) {
       // Firebase knows this name
-      console.log("user already has account on FB");
-      console.log("should see events and collection");
+      // console.log("user already has account on FB");
+      // console.log("should see events and collection");
     } else {
       // Firebase does not have this name
-      console.log("adding user to FB")
+      // console.log("adding user to FB")
       // Sign them up!
       thisUsersRef.set({signUpAt: firebase.database.ServerValue.TIMESTAMP }); // give them a persistent data node to make sure they stay in the db
-      console.log("Visual: make sure events and collections show +add+ entries")
+      // console.log("Visual: make sure events and collections show +add+ entries")
     }
   });
 }
@@ -201,17 +201,17 @@ function signOut() {
 //* Link to BG
 function linkToBGG(bggname) {
   thisBggname = bggname.toLowerCase();
-  console.log("linking to BGG");
+  // console.log("linking to BGG");
   BGG_API.checkUserName(thisBggname).then( bggIDResult => {
     if(!bggIDResult){
-      console.log("could not find bgg user account", thisBggname);
+      // console.log("could not find bgg user account", thisBggname);
       //TODO: visual that it failed
     }
     else {
       thisUsersRef.update({ bggname: thisBggname });
       localStorage.setItem(LOCAL_STORAGE_VARS.bggname, thisBggname);
       BGG_API.getUsersOwnedCollection(thisBggname).then( collectionResults => {
-        console.log("this is their collection found", collectionResults);
+        // console.log("this is their collection found", collectionResults);
         thisUsersRef.child("coll").remove();
         // reverse collection (which will be alpha sorted) because usually adding a single game is by prepend
         collectionResults.reverse().forEach(gameObj => {
@@ -224,7 +224,7 @@ function linkToBGG(bggname) {
 }
 ////// Resync with BGG
 //// function resyncWithBGG() {
-////   console.log("resyncing with BGG");
+//   console.log("resyncing with BGG");
 ////   localStorage.getItem(LOCAL_STORAGE_VARS.bggname, BGGAccount);
 ////   // thisUsersRef.update({ BGG: BGGAccount });
 ////   // TODO: clear FB and local storage coll
@@ -236,32 +236,32 @@ function linkToBGG(bggname) {
 //#region GAMES COLLECTION
 //* Fetch Firebase Collection
 function populateCollectionFromFB(userRef) {
-  console.log("populating collection from firebase refkey=", userRef.key);
+  // console.log("populating collection from firebase refkey=", userRef.key);
   userRef.child("coll").once("value").then(function(dataSnap) {
     const val = dataSnap.val();
     if (!val){
-      console.log("user has no collection on FB");
-      console.log("VISUAL?: show where to add games, or link bgg")
+      // console.log("user has no collection on FB");
+      // console.log("VISUAL?: show where to add games, or link bgg")
       return;
     } else {
-      console.log("user has collection on FB", val);
-      console.log("show already be shown on screen by child_added");
+      // console.log("user has collection on FB", val);
+      // console.log("show already be shown on screen by child_added");
     }
   });
 }
 
 //* Search BGG for game, to add to Collection
 function searchBGG(gameTitle) {
-  console.log("searching bgg for", gameTitle);
-  console.log("VISUAL: clear previous search results");
+  // console.log("searching bgg for", gameTitle);
+  // console.log("VISUAL: clear previous search results");
   BGG_API.searchForGameByName(gameTitle).then( results => {
-    console.log("search results", results);
+    // console.log("search results", results);
     if (results.length === 0) {
-      console.log("no results found");
+      // console.log("no results found");
     }
     else {
       // TODO: visuals
-      console.log("VISUAL: add results to modal");
+      // console.log("VISUAL: add results to modal");
       //! TODO: add data attr for bggid
     }
   });
@@ -269,13 +269,13 @@ function searchBGG(gameTitle) {
 
 //* Add to Game Collection
 function addGameToCollectionByObj(gameObj) {
-  console.log("add game to collection by obj", gameObj);
+  // console.log("add game to collection by obj", gameObj);
 
   thisUsersRef.child("coll").push(gameObj);
 }
 
 function addGameToCollectionByID(id) {
-  console.log("add game to collection by id", id);
+  // console.log("add game to collection by id", id);
 
   // Check if user has this in their collection already
   thisUsersRef.child('coll')
@@ -293,7 +293,7 @@ function addGameToCollectionByID(id) {
           ////localStorage.setItem(LOCAL_STORAGE_VARS.collection, JSON.stringify(collection));
         });
       } else {
-        console.log("user already has this game in their collection");
+        // console.log("user already has this game in their collection");
       }
   });
 }
@@ -301,7 +301,7 @@ function addGameToCollectionByID(id) {
 //* Manual Add to Collection
 function manualAddGameToCollection() {
   //TODO: get data from FORM
-  console.log("manual add game to collection");
+  // console.log("manual add game to collection");
 
   // const gameObj = gameObjArray[0];
   // Add to Firebase 
@@ -331,14 +331,14 @@ function manualAddGameToCollection() {
 
 //* Remove Game from Collection
 function removeGameFromCollectionByID(id) {
-  console.log("removing game from collection with id", id);
+  // console.log("removing game from collection with id", id);
   thisUsersRef.child('coll')
     .orderByChild('id').equalTo(id)
     .once("value").then(snap => { 
       const val = snap.val();
       thisUsersRef.child(`coll/${Object.keys(val)[0]}`).remove()
       .then( remvRes => {
-        console.log("remove succeeded", remvRes);
+        // console.log("remove succeeded", remvRes);
       });
     });
 }
@@ -346,7 +346,7 @@ function removeGameFromCollectionByID(id) {
 //* Listeners
 function listenForAddGame(args) {
   let val = args.val();
-  console.log("heard you wanted to add a game", val);
+  // console.log("heard you wanted to add a game", val);
 
   // Build clone
   let $clone = JQ_IDs.gameTemplate.clone().contents();
@@ -366,7 +366,7 @@ function listenForAddGame(args) {
 }
 function listenForRemoveGame(args) {
   const val = args.val();
-  console.log("heard you wanted to remove a game", val, val.id);
+  // console.log("heard you wanted to remove a game", val, val.id);
   $(DOM_FIND.gameTmp_listItem).filter(`[data-bggid=${val.id}]`).remove();
 }
 //#endregion GAMES COLLECTION
@@ -375,22 +375,22 @@ function listenForRemoveGame(args) {
 //#region EVENTS
 //* Fetch Firebase Events
 function populateEventsFromFB(userRef) {
-  console.log("populating events from firebase refkey=", userRef.key);
+  // console.log("populating events from firebase refkey=", userRef.key);
   userRef.child("myEvents").once("value").then(function(dataSnap) {
     const val = dataSnap.val();
     if (!val) {
-      console.log("user has no events on FB");
-      console.log("VISUAL?: show where to add/join events");
+      // console.log("user has no events on FB");
+      // console.log("VISUAL?: show where to add/join events");
       return;
     } else {
-      console.log("user has events on FB", val, "events should be on screen");
+      // console.log("user has events on FB", val, "events should be on screen");
     }
   });
 }
 
 //* Create an Event
 function creatEvent(eventObj) {
-  console.log("create event from obj", eventObj);
+  // console.log("create event from obj", eventObj);
 
   // Add to Firebase 
   let newEventRef = thisUsersRef.child("myEvents").push();
@@ -415,26 +415,26 @@ function creatEvent(eventObj) {
 //* Join Event 
 function joinEventByID(eventID) {
   eventID = eventID.toUpperCase();
-  console.log("joining event by id", eventID);
+  // console.log("joining event by id", eventID);
   thisUsersRef.child("myEvents").once("value").then(snap => {
     if (snap.child(eventID).exists()) {
-      console.log("user is already part of this event");
-      //TODO: console.log("visually alert user")
+      // console.log("user is already part of this event");
+      TODO: console.log("visually alert user")
     }
     else {
       eventsRef.once("value").then( snap => {
         const event = snap.child(eventID);
         if (event.exists()) {
-          console.log("FB events has this ID", event, event.key, event.val());
+          // console.log("FB events has this ID", event, event.key, event.val());
           thisUsersRef.child("myEvents").child(event.key).set({
             submitted: false,
             voted: false,
           });
-          console.log("added to my events");
+          // console.log("added to my events");
           //? TODO: link to set()'s success
         } else {
-          console.log("FB doesn't know this ID");
-          console.log("notify user can't find event");
+          // console.log("FB doesn't know this ID");
+          // console.log("notify user can't find event");
           //TODO: visual alert user that can't find event ID
         }
       });
@@ -445,7 +445,7 @@ function joinEventByID(eventID) {
 //* Listeners
 function animateEvent($eventDOM){
   $eventDOM.css({ height: 'auto' });
-  const fullHeight = $eventDOM[0].scrollHeight; //? not quite right though..
+  const fullHeight = $eventDOM[0].scrollHeight; //? not quite right though?..
 
   let animation = anime({
     targets: $eventDOM[0],
@@ -465,7 +465,15 @@ function listenForAddEvent(args) {
       const details = snapDetails.val();
       // Build an Event clone
       let $clone = JQ_IDs.eventTemplate.clone().contents();
-      const dateWFormat = moment(details.date).format("dddd, MMMM Do");
+      let eventDate = moment(details.date);
+
+      if (eventDate.diff(moment(),'days') < -7){
+        // console.log("expired");
+        thisUsersRef.child(`myEvents/${args.key}`).remove();
+        return;
+      }
+
+      const dateWFormat = eventDate.format("dddd, MMMM Do");
 
       $clone.find(DOM_FIND.eventTmp_title)
         .text(details.name)
@@ -484,7 +492,7 @@ function listenForAddEvent(args) {
 }
 
 function listenForRemoveEvent(args) {
-  console.log("heard you wanted to remove my event", args.val(), args.key);
+  // console.log("heard you wanted to remove my event", args.val(), args.key);
   $(DOM_FIND.eventTmp_listItem).find(`[data-event-id=${args.key}]`).closest(DOM_FIND.eventTmp_listItem).remove();
 }
 //#endregion EVENTS
@@ -492,7 +500,7 @@ function listenForRemoveEvent(args) {
 
 //#region SUBMITS / CLICKS
 JQ_IDs.loginForm.submit(function(event) {
-  console.log("submitting login form!");
+  // console.log("submitting login form!");
   event.preventDefault();
 
   let username_input = JQ_IDs.login_userName.val().trim();
@@ -510,7 +518,7 @@ JQ_IDs.loginForm.submit(function(event) {
 });
 
 JQ_IDs.eventForm.submit(function(event) {
-  console.log("submitting event form!");
+  // console.log("submitting event form!");
   event.preventDefault();
 
   let eventName_input = JQ_IDs.eventName.val().trim();
@@ -518,7 +526,7 @@ JQ_IDs.eventForm.submit(function(event) {
   let eventAddr_input = JQ_IDs.eventAddressFull.val().trim();
   let eventDesc_input = JQ_IDs.eventDescript.val().trim();
   let eventNumInvites_input = JQ_IDs.eventNumInvites.val().trim();
-  console.log(eventName_input, eventDate_input, eventAddr_input, eventDesc_input, eventNumInvites_input);
+  // console.log(eventName_input, eventDate_input, eventAddr_input, eventDesc_input, eventNumInvites_input);
 
   JQ_IDs.eventName.val("");
   JQ_IDs.eventDate.val("");
@@ -546,12 +554,12 @@ JQ_IDs.eventForm.submit(function(event) {
 });
 
 JQ_IDs.joinEventForm.submit(function(event) {
-  console.log("submitting join event!");
+  // console.log("submitting join event!");
   event.preventDefault();
 
   let eventCode_input = JQ_IDs.joinEvent_input.val().trim().toUpperCase();
 
-  console.log(eventCode_input);
+  // console.log(eventCode_input);
 
   JQ_IDs.joinEvent_input.val("");
   if (!eventCode_input){
@@ -563,11 +571,11 @@ JQ_IDs.joinEventForm.submit(function(event) {
 });
 
 JQ_IDs.bggLinkForm.submit(function(event) {
-  console.log("submitting bgg link!");
+  // console.log("submitting bgg link!");
   event.preventDefault();
 
   let bggname_input = JQ_IDs.bggLink_input.val().trim();
-  console.log(bggname_input);
+  // console.log(bggname_input);
 
   JQ_IDs.bggLink_input.val("");
   if (!bggname_input){
@@ -587,11 +595,10 @@ JQ_IDs.signout_btn.click(signOut);
 
 // $(document).on("click", DOM_FIND.eventTmp_title, function(event) {
 //   const eventID = $(this).data("event-id");
-//   console.log("re-directing to event!", eventID);
+//  // console.log("re-directing to event!", eventID);
 //   // event.preventDefault();
-
 //   if (!eventID){
-//     console.log("there was no eventID");
+    //// console.log("there was no eventID");
 //     // TODO: visual error .. and probably remove from list
 //     return;
 //   }
@@ -600,6 +607,7 @@ JQ_IDs.signout_btn.click(signOut);
 //     // window.location.href = `./events?id=${eventID}.html`;
 //   }
 // });
+
 //#endregion SUBMITS / CLICKS
 
 
@@ -608,9 +616,9 @@ JQ_IDs.signout_btn.click(signOut);
 thisUsername = localStorage.getItem(LOCAL_STORAGE_VARS.username);
 if (thisUsername) {
   thisUsername = thisUsername.toLowerCase();
-  console.log("local storage has a name", thisUsername);
+  // console.log("local storage has a name", thisUsername);
   checkFBforName(thisUsername).then(doesExist => {
-    console.log("user existence in FB? ", doesExist);
+    // console.log("user existence in FB? ", doesExist);
     if (doesExist) {
       // Firebase knows this name
       buildUpUser(thisUsername);
@@ -624,7 +632,7 @@ if (thisUsername) {
 }
 
 if (!thisUsername) { // using if (instead of else) in order to also catch invalid localstorage from above
-  console.log("local storage has no name");
+  // console.log("local storage has no name");
   JQ_IDs.signin_btn.show();
   JQ_IDs.signout_btn.hide();
   //? TODO: localStorage.clear(); //? clear other local storage? this correct, necessary to do?
@@ -634,11 +642,11 @@ if (!thisUsername) { // using if (instead of else) in order to also catch invali
 thisBggname = localStorage.getItem(LOCAL_STORAGE_VARS.bggname);
 if (thisBggname) {
   thisBggname = thisBggname.toLowerCase();
-  console.log("local storage has a bgg name", thisBggname);
+  // console.log("local storage has a bgg name", thisBggname);
 }
 
 if (!thisBggname) { // using if (instead of else) in order to also catch invalid localstorage from above
-  console.log("local storage has no bggname");
+  // console.log("local storage has no bggname");
   // JQ_IDs.signin_btn.show();
   // JQ_IDs.signout_btn.hide();
   //? TODO: localStorage.clear(); //? clear other local storage? this correct, necessary to do?

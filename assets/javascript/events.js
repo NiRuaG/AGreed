@@ -1,6 +1,6 @@
 $(document).ready(() => {
   "use strict";
-  console.log("EVENTS READY!");
+  // console.log("EVENTS READY!");
     
     //#region DOM ELEMENTS
     const JQ_IDs = {
@@ -72,14 +72,17 @@ $(document).ready(() => {
 
     let myVoteCount = 0;
     let myVoteArray = [false,false,false];
+    let myCanVoteStatus = true;
     //// let mySubmitCount = 0;
 
 function buildUpEvent(eventID, eventObj) {
   // Page-Local Variables
   thisEventID = eventID.toUpperCase();
   thisEventObj = eventObj;
-  console.log("building up event", thisEventID, eventObj);
+  // console.log("building up event", thisEventID, eventObj);
   myVoteCount = 0;
+  myVoteArray = [false,false,false];
+  myCanVoteStatus = true;
 
   // Local Storage
   localStorage.setItem(LOCAL_STORAGE_VARS.eventID, thisEventID);
@@ -114,7 +117,7 @@ function buildUpEvent(eventID, eventObj) {
 }
 
 function tearDownEvent() {
-  console.log("tearing down event");
+  // console.log("tearing down event");
 
   // DOM Elements
   //? JQ_IDs.username      .empty();
@@ -134,7 +137,7 @@ function tearDownEvent() {
   }
   thisEventRef = null;
   if (thisUsersSubmitRef){
-    thisUsersSubmitRef.on("value", lockSubmissions);
+    thisUsersSubmitRef.on("value", listenForSubmissionLock);
   }
   thisUsersSubmitRef = null;
   if (thisUsersVotedRef) {
@@ -151,7 +154,8 @@ function tearDownEvent() {
   thisEventID  = "";
   thisEventObj = null;
   myVoteCount = 0;
-  mySubmitCount = 0;
+  myVoteArray = [true,true,true];
+  myCanVoteStatus = false;
 }
 
 
@@ -183,40 +187,65 @@ function fetchUsersCollection() {
 }
 
 // #region VOTES
+function listenForVotings(args) {
+  // console.log("heard there were event votes", args.val());
+
+  // no votes yet
+  if (!args.val()) {
+    return;
+  }
+  
+  let sortedArr = [{votes:0},{votes:0},{votes:0}];
+  
+  Object.values(args.val()).forEach( gameObj => {
+    if ((gameObj.votes) > sortedArr[0].votes) {
+      sortedArr.unshift(gameObj);
+    }
+    else if ((gameObj.votes) > sortedArr[1].votes) {
+      sortedArr.splice(1, 0, gameObj);
+    }
+    else if ((gameObj.votes) > sortedArr[2].votes) {
+      sortedArr.splice(2,0,gameObj);
+    }
+  });
+  // console.log(sortedArr);
+
+  let resultSlotIndex = 0;
+  sortedArr.slice(0,3).forEach( sortedGameObj => {
+    if (!sortedGameObj.votes) {
+      return;
+    }
+    // console.log(sortedGameObj);
+
+    let $clone = buildGameClone(sortedGameObj);
+    let $resultChoiceTarget = JQ_IDs.voteResultsList.find(DOM_FIND.voteResult).eq(resultSlotIndex);
+    
+    $resultChoiceTarget.find(DOM_FIND.voteResultCount).text(`# Votes: ${sortedGameObj.votes}`);
+    $resultChoiceTarget.find("input").hide();
+    $resultChoiceTarget.find(DOM_FIND.voteResultLanding).empty().append($clone);
+
+     ++resultSlotIndex;
+  });
+  // console.log(resultSlotIndex);
+}
+
 function listenForVoteLock(args){
   const val = args.val();
   if (val === true) {
     JQ_IDs.voteLock_btn.css({
-      //!'pointer-events': 'none',
+      'pointer-events': 'none',
       'background' : 'gray',
     }).text("You have already voted for this event");
     JQ_IDs.myVotedList.hide();
+    myCanVoteStatus = false;
   }
   else {
     JQ_IDs.voteLock_btn.css({
       'pointer-events' : 'initial',
     }).text("Rock & Lock the Vote");
     JQ_IDs.myVotedList.show();
+    myCanVoteStatus = true;
   }
-}
-
-function listenForVotings(args) {
-  console.log("heard there were event votes", args.val());
-  
-  let resultSlotIndex = 0;
-  args.forEach( result => {
-    // console.log(result.key, result.val());
-
-    let $clone = buildGameClone(result.val());    
-    let $resultChoiceTarget = JQ_IDs.voteResultsList.find(DOM_FIND.voteResult).eq(resultSlotIndex);
-    
-    $resultChoiceTarget.find(DOM_FIND.voteResultCount).text(`# Votes: ${result.val().votes}`);
-    $resultChoiceTarget.find("input").hide();
-    $resultChoiceTarget.find(DOM_FIND.voteResultLanding).empty().append($clone);
-
-     ++resultSlotIndex;
-  });
-  console.log(resultSlotIndex);
 }
 // #endregion VOTES
 
@@ -229,21 +258,21 @@ function addSubmissionToEvent(submitObj) {
 //* Listeners
 function listenForAddSubmit(args) {
   const val = args.val();
-  console.log("heard you wanted to add a submission", val);
+  // console.log("heard you wanted to add a submission", val);
   JQ_IDs.submissionsList.prepend(buildGameClone(val));
 }
 function listenForRemoveSubmit(args) {
   const val = args.val();
-  console.log("heard you wanted to remove a submission", val, val.id);
+  // console.log("heard you wanted to remove a submission", val, val.id);
   $(DOM_FIND.gameTmp_listItem).filter(`[data-bggid=${val.id}]`).remove();
 }
 function listenForSubmissionLock(args) {
   const val = args.val();
   if (val === true) {
     JQ_IDs.addSubmission_btn.css({
-      //! 'pointer-events': 'none',
+      'pointer-events': 'none',
       'background' : 'gray',
-    }).text("You've submitted games for this event");
+    }).text("You've already submitted games for this event");
   }
   else {
     JQ_IDs.addSubmission_btn.css({
@@ -257,6 +286,7 @@ function listenForSubmissionLock(args) {
 //#region SUBMITS & CLICKS
 //* Sign Out
 JQ_IDs.signout_btn.click(function(event){
+  localStorage.removeItem(LOCAL_STORAGE_VARS.username);
       tearDownEvent();
       window.location.href = `./index.html`;
 });
@@ -277,7 +307,7 @@ JQ_IDs.signout_btn.click(function(event){
 // Removing from My Votes
 $(document).on("click", `#myVotedList ${DOM_FIND.gameTmp_listItem}`, function (event) {
   let $this = $(this);
-  console.log("clicking to REMOVE vote on:", $this);
+  // console.log("clicking to REMOVE vote on:", $this);
   if (myVoteCount === 0) {
     return;
   }
@@ -295,15 +325,18 @@ $(document).on("click", `#myVotedList ${DOM_FIND.gameTmp_listItem}`, function (e
 // Adding to My Votes
 $(document).on("click", `#submissionsList ${DOM_FIND.gameTmp_listItem}`, function(event) {
   let $this = $(this);
-  console.log("clicking to vote on:", $this);
+  // console.log("clicking to vote on:", $this);
 
   if (myVoteCount >= 3) { 
-    console.log("can't vote more than 3");
+    // console.log("can't vote more than 3");
     return; 
   }
   const openVoteSlotNum = myVoteArray.indexOf(false);
   if (openVoteSlotNum < 0) {
     return; 
+  }
+  if (!myCanVoteStatus) {
+    return;
   }
 
   // DOM
@@ -318,7 +351,7 @@ $(document).on("click", `#submissionsList ${DOM_FIND.gameTmp_listItem}`, functio
 
 // Locking My Votes
 JQ_IDs.voteLock_btn.click(function(event){
-  console.log("locking in my votes");
+  // console.log("locking in my votes");
   thisUsersVotedRef.set(true);
   
   JQ_IDs.myVotedList.find(DOM_FIND.gameTmp_listItem).each( (index_, value) => {
@@ -344,20 +377,20 @@ JQ_IDs.voteLock_btn.click(function(event){
 //* Submissions
 // Add possible submission
 $(document).on("click", `#collectionList ${DOM_FIND.gameTmp_listItem}`, function(event) {
-  console.log("adding a game of mine as submission");
+  // console.log("adding a game of mine as submission");
   JQ_IDs.chosenGames.append(this);
   //? TODO: limit submission count
 });
 
 // Remove possible submission 
 $(document).on("click", `#chosenGames ${DOM_FIND.gameTmp_listItem}`, function(event) {
-  console.log("removing a game of mine as submission");
+  // console.log("removing a game of mine as submission");
   JQ_IDs.collectionList.prepend(this);
 });
 
 // Lock my submissions
 JQ_IDs.doneSubmit.click(function(event) {
-  console.log("done submitting");
+  // console.log("done submitting");
 
   thisUsersSubmitRef.set(true);
   
@@ -382,19 +415,19 @@ JQ_IDs.doneSubmit.click(function(event) {
     //* Check for valid username and valid event
 thisUsername = localStorage.getItem(LOCAL_STORAGE_VARS.username);
 if (!thisUsername) {
-  console.log("local storage doesnt have user id, send back to profile page");
+  // console.log("local storage doesnt have user id, send back to profile page");
   //! TODO: visual to say please sign in, by going back to profile page
 } else {
   thisUsername = thisUsername.toLowerCase();
-  console.log("local storage has username", thisUsername);
+  // console.log("local storage has username", thisUsername);
   
   //* check this name with firebase
   userNamesRef.once("value").then(namesSnap => {
     if (namesSnap.child(thisUsername).exists()) {
-      console.log("user exists in FB");
+      // console.log("user exists in FB");
       checkForEvent()
     } else {
-      console.log("user doesn't exist in FB");
+      // console.log("user doesn't exist in FB");
       //! todo: visual to say please sign back in on index page
     }
   });
@@ -409,21 +442,21 @@ function checkForEvent() {
   });
 
   if (!urlQueries.hasOwnProperty('id')) {
-    console.log("url does not have event id");
+    // console.log("url does not have event id");
     //! TODO: visual to go back to profile page to select an event
   } else {
     thisEventID = urlQueries.id.toUpperCase();
-    console.log("local storage has event id", thisEventID);
+    // console.log("local storage has event id", thisEventID);
     // Check FB for event ID
     eventsRef.once("value").then(snap => {
       if (snap.child(thisEventID).exists()) {
-        console.log("event exists in FB");
+        // console.log("event exists in FB");
         // Firebase knows this event
         //? TODO: check that user has joined this event
         buildUpEvent(thisEventID, snap.child(thisEventID).val());
         fetchUsersCollection();
       } else {
-        console.log("event doesn't exist in FB");
+        // console.log("event doesn't exist in FB");
         tearDownEvent();
       }
     });

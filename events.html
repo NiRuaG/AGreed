@@ -36,11 +36,11 @@
       </div> -->
       <div class="callout eventContainer">
         <div class="eventDetails">
-          <h4>Event Code: <span id="eventCode"></span></h4>
-          <h4>Address: <span id="eventAddr"></span></h4>
-          <h4>Date of fun: <span id="eventDate"></span></h4>
-          <h4>Gamers Invited: <span id="eventNumInvite"></span></h4>
-          <h4>Description:</h4>
+          <h4><strong>Event Code:</strong> <span id="eventCode"></span></h4>
+          <h4><strong>Address:</strong> <span id="eventAddr"></span></h4>
+          <h4><strong>Date of fun:</strong> <span id="eventDate"></span></h4>
+          <h4><strong>Gamers Invited:</strong> <span id="eventNumInvite"></span></h4>
+          <h4><strong>Description:</strong></h4>
           <h5 id="eventDescript"></h5>
         </div>
         <div id="map">MAP IS HERE</div>
@@ -50,26 +50,26 @@
         <button id="addSubmission_btn" class="button" data-open="votingModal">Add to the Voting Pool</button>
       </div>
       <div id="voteSection" class="callout voteContainer">
-        <h4>Current Voting Status</h4>
+        <h4><strong>Current Voting Status</strong></h4>
         <section id="voteResultsList">
           <!-- dynamic voted items go here -->
           <span class="voteResult" data-id="1">
-            <span class="voteResultCount"></span>
             <span class="voteResultLanding"></span>
+            <p class="voteResultCount"></p>
             <input type="image" src="assets/images/1st-Choice-Thumbnail.jpg" alt="First Choice">
           </span>
           <span class="voteResult" data-id="2">
-            <span class="voteResultCount"></span>
             <div class="voteResultLanding"></div>
+            <p class="voteResultCount"></p>
             <input type="image" src="assets/images/2nd-Choice-Thumnail.jpg" alt="Second Choice">
           </span>
           <span class="voteResult" data-id="3">
-            <span class="voteResultCount"></span>
             <div class="voteResultLanding"></div>
+            <p class="voteResultCount"></p>
             <input type="image" src="assets/images/3rd-Choice-Thumbnail.jpg" alt="Third Choice">
           </span>
         </section>
-        <h4>My Votes</h4>
+        <h4><strong>My Votes</strong></h4>
         <section id="myVotedList">
           <!-- dynamic voted items go here -->
           <span class="voteChoice" data-id="1">
@@ -84,7 +84,7 @@
         </section>
         <button id="voteLock_btn" class="button">Rock & Lock the Vote</button>
         <br>
-        <h4>The Voting Pool</h4>
+        <h4><strong>The Voting Pool</strong></h4>
         <div id="submissionsList">
           <!-- dynamic submission items go here -->
         </div>

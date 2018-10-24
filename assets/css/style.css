@@ -11,7 +11,7 @@ h1, h2, h3 {
 
 h4, h5, h6, p {
   font-family: 'Stardos Stencil', cursive;
-  color:
+  /* color: */
 }
 
 #siteTitle {
@@ -48,7 +48,7 @@ h4, h5, h6, p {
 }
 
 #login_userName {
-  font-family: 
+  /* font-family:  */
 }
 
 .grid-x {
@@ -81,6 +81,9 @@ h4, h5, h6, p {
 #createEventBtn {
   color: white;
 }
+#createEventBtn:hover {
+  color: #1468a0;
+}
 
 #signout_btn, #signin_btn {
   position: absolute;
@@ -88,6 +91,7 @@ h4, h5, h6, p {
   width: 100%;
   background-color: rgba(179, 255, 0, .75);
   color: black;
+  font-size: 1.5rem;
 }
 
 #eventModal {
@@ -178,7 +182,7 @@ a {
 }
 
 .eventDetails #eventAddress {
-  font-size: .75rem;
+  font-size: 1rem;
 }
 
 .eventThumbnail {
@@ -238,7 +242,7 @@ a {
   padding: 0.2rem 0.3rem;
   /* border-radius: 6px; */
   word-wrap: normal;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
 
   position: absolute;
   left: 0;
@@ -260,6 +264,9 @@ a {
   margin-top: 0;
   margin-bottom: 3rem;
   border: solid .1rem rgb(179, 255, 0);
+}
+.voteContainer input {
+  pointer-events: none;
 }
 
 .eventContainer {
@@ -304,6 +311,9 @@ a {
 #eventsList, #joinEventForm, #bggLinkForm, .button, .hoverTooltip {
   font-family: 'Stardos Stencil', cursive;
 }
+#joinEvent_input::placeholder {
+  color: darkslategray;
+}
 
 #collectionList {
   margin: 1rem .75rem;
@@ -331,9 +341,8 @@ a {
   padding: 0;
 }
 
-#doneSubmit {
-
-}
+/* #doneSubmit { */
+/* } */
 
 #voteResultsList, #myVotedList {
   display: flex;
@@ -341,4 +350,8 @@ a {
   justify-content: space-around;
   align-items: flex-end;
   font-family: 'Stardos Stencil', cursive;
+}
+.voteResultCount {
+  font-size: 1.5rem;
+  margin-bottom: 0;
 }
