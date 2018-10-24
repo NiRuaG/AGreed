@@ -5,15 +5,29 @@ body {
   /* position: top; */
 }
 
+h1, h2, h3 {
+  font-family: 'Fredericka the Great', cursive;
+}
+
+h4, h5, h6, p {
+  font-family: 'Stardos Stencil', cursive;
+  color:
+}
+
 #siteTitle {
   padding: 1rem .5rem;
-  background-image: linear-gradient(rgba(0, 0, 0, .75), rgba(0, 0, 0, 0));
-  height: 200%;
   writing-mode: vertical-rl;
   text-orientation: upright;
-  color: rgb(179, 255, 0);
-  /* vertical-align: middle; */
-  /* padding-right: 1rem; */
+  color: white;
+  background: linear-gradient(rgba(179, 255, 0, .33), rgba(179, 255, 0, 0));
+  text-shadow: -2px -4px rgba(0, 0, 0, .5);
+}
+
+@media only screen and (max-width: 650px) {
+  #siteTitle {
+    text-orientation: initial;
+    writing-mode: horizontal-tb;
+  };
 }
 
 #loginModal {
@@ -21,6 +35,7 @@ body {
   background-color: rgba(0, 0, 0, .5);
   color: rgb(179, 255, 0);
   border: 1.5px solid rgb(179, 255, 0);
+  font-family: 'Stardos Stencil', cursive;
 }
 
 #loginModal h1 {
@@ -30,6 +45,10 @@ body {
 #login_submit {
   background-color: rgba(179, 255, 0, .75);
   color: black;
+}
+
+#login_userName {
+  font-family: 
 }
 
 .grid-x {
@@ -43,6 +62,7 @@ body {
   height: 600px;
   border: solid .1rem rgba(179, 255, 0, .75);
   text-align: center;
+  font-family: 'Stardos Stencil', cursive;
 }
 
 .menu a {
@@ -74,6 +94,8 @@ body {
   border: solid .1rem rgb(179, 255, 0);
   background: rgba(0, 0, 0, .75);
   color: rgb(179, 255, 0);
+  font-family: 'Stardos Stencil', cursive;
+
 }
 
 #eventModal label {
@@ -118,9 +140,16 @@ body {
 
 .titleBkgd button, #voteLock_btn {
   background-color: rgb(179, 255, 0);
+  color: black;
 }
+
+.callout {
+  background-color: rgba(218, 226, 239, 0.85);
+}
+
 #voteLock_btn {
   color: black;
+  display: inline;
 }
 
 #eventImage {
@@ -136,14 +165,28 @@ body {
 .eventDetails {
   float: right;
   text-align: right;
-  margin: 5% 5% 0 0;
+  margin: 1% 2% 0 0;
+  font-size: 1.5rem;
+}
+
+a {
+  color: rgb(179, 255, 0);
+}
+
+.eventDetails .eventTmp_date {
+  font-size: 1rem;
+}
+
+.eventDetails #eventAddress {
+  font-size: .75rem;
 }
 
 .eventThumbnail {
   border-width: 0;
-  width: 25%;
+  width: 30%;
   margin-bottom: 0;
 }
+
 
 .bggLink {
   position: relative;
@@ -213,16 +256,33 @@ body {
   width: 15%;
 }
 
-.callout {
+.voteContainer {
   margin-top: 0;
   margin-bottom: 3rem;
-  border: solid .1rem rgb(179, 255, 0)
+  border: solid .1rem rgb(179, 255, 0);
+}
 
+.eventContainer {
+  margin-top: 0;
+  margin-bottom: 3rem;
+  border: solid .1rem rgb(179, 255, 0);
+  display: flex;
+  justify-content: space-between;
+}
+
+.eventContainer .eventDetails {
+  text-align: left;
+  vertical-align: inherit;
 }
 
 #map {
   height: 300px;
   width: 300px;
+  position: relative;
+  /* overflow: hidden; */
+  /* display: inline; */
+  /* display: flex; */
+
 }
 
 #votingModal {
@@ -240,10 +300,10 @@ body {
   border-bottom: solid .25rem rgb(40, 46, 42);
   margin: 0;
 }
-/* 
-#votingModal #collectionList {
-  overflow: auto;
-} */
+
+#eventsList, #joinEventForm, #bggLinkForm, .button, .hoverTooltip {
+  font-family: 'Stardos Stencil', cursive;
+}
 
 #collectionList {
   margin: 1rem .75rem;
@@ -251,6 +311,7 @@ body {
   flex-flow: row wrap;
   justify-content: space-between;
   align-items: flex-end;
+  font-family: 'Stardos Stencil', cursive;
 }
 
 #gameSelection h5,#gameSelection button {
@@ -258,14 +319,20 @@ body {
 }
 #gameSelection button {
   margin-right: 0;
+  background-color: rgb(179, 255, 0);
+  color: black;
 }
 
 #voteCollectionTitle {
-  margin: 0 0 1rem 0;
+  margin: 1rem 1rem;
 }
 
 #modalCollection {
   padding: 0;
+}
+
+#doneSubmit {
+
 }
 
 #voteResultsList, #myVotedList {
@@ -273,4 +340,5 @@ body {
   flex-flow: row wrap;
   justify-content: space-around;
   align-items: flex-end;
+  font-family: 'Stardos Stencil', cursive;
 }

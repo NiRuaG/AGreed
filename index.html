@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="assets/css/reset.css">
   <link rel="stylesheet" href="Foundation-6.4.2/css/foundation.css">
   <link rel="stylesheet" href="assets/css/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Stardos+Stencil|Fredericka+the+Great" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 </head>
 
@@ -32,19 +33,19 @@
 
   <main class="grid-x grid-margin-x">
     <div class=" cell medium-1" id="siteTitle">
-      <h1>Not so BOARD Games</h1>
+      <h1>NOT SO BOARD GAMES</h1>
     </div>
     <div class="vertical menu cell medium-2">
       <img id="profileThumbnail" src="assets/images/Thumbnail_Potatoe.jpg">
       <br>
-      <h4 id="username"></h4>
-      <a class="eventModal" id="createEventBtn" href="#" data-open="eventModal" style="display:none">Create an Event</a>
+      <h3 id="username"></h3>
+      <a class="eventModal" id="createEventBtn" href="#" data-open="eventModal" style="display:none">CREATE AN EVENT</a>
       <button id="signout_btn" class="button">Sign Out</button>
-      <button id="signin_btn" class="button">Sign In</button>
+      <button id="signin_btn" class="button">SIGN IN</button>
     </div>
 
     <section id="eventsSection" class="cell medium-4" style="display:none">
-      <h3 class="titleBkgd">My Events</h3>
+      <h3 class="titleBkgd">EVENTS</h3>
       </div>
       <form id="joinEventForm">
         <input id="joinEvent_input" type="text" placeholder="Join Event by CODE">
@@ -59,14 +60,14 @@
           <div class="eventDetails">
             <a class="eventTmp_title" href="events.html">The Best Game Night Title Ever</a>
             <p class="eventTmp_date">Some Date</p>
-            <p>Where: <span class="eventTmp_addr"></span></p>
+            <p  id="eventAddress">Where: <span class="eventTmp_addr"></span></p>
             <p class="eventTemp_joinID">ID</p>
           </div>
         </div></template>
     </section>
     <!-- Area regarding the events and personalized collection of games -->
     <section id="collectionSection" class="cell medium-5" style="display:none">
-      <h3 class="titleBkgd">My Games</h3>
+      <h3 class="titleBkgd">GAMES</h3>
       <div class="bggLink">
         <form id="bggLinkForm">
           <input id="bggLink_input" type="text" placeholder="Existing BoardGameGeek Username">
@@ -119,7 +120,7 @@
               <textarea id="eventDescript" placeholder="From 1 to 10 how excited are you? Will there be food??"></textarea>
             </label>
           </div>
-          <input class="button expanded large-down-expanded" id="event_submit" type="submit" href="#" value="Create Event">
+          <input class="button expanded large-down-expanded" id="event_submit" type="submit" href="#" value="CREATE EVENT">
         </div>
       </div>
     </form>

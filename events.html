@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="assets/css/reset.css">
   <link rel="stylesheet" href="Foundation-6.4.2/css/foundation.css">
   <link rel="stylesheet" href="assets/css/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Stardos+Stencil|Fredericka+the+Great" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="assets/javascript/xml2json.js"></script>
 </head>
@@ -16,14 +17,14 @@
 <body>
   <div class="grid-x grid-margin-x">
     <div class=" cell medium-1" id="siteTitle">
-      <h1>Not so BOARD Games</h1>
+      <h1>NOT SO BOARD GAMES</h1>
     </div>
     <div class="vertical menu cell medium-2">
       <a href="index.html">
         <img id="profileThumbnail" src="assets/images/Thumbnail_Potatoe.jpg">
       </a>
       <br>
-      <h4 id="username"></h4>
+      <h3 id="username"></h3>
       <button id="signout_btn" class="button">Sign Out</button>
     </div>
     <!-- Event page for clicked event -->
@@ -33,20 +34,22 @@
       <!-- <div class="eventPageThumbnail thumbnail">
         <img id="eventImage" src="assets/images/eventThumbnail.png" alt="Temporary event thumbnail">
       </div> -->
-      <div class="callout">
-        <h4>Event Code: <span id="eventCode"></span></h4>
-        <h4>Address: <span id="eventAddr"></span></h4>
-        <h4>Date of fun: <span id="eventDate"></span>&nbsp;&nbsp;|&nbsp;&nbsp;# of Gamers Invited: <span id="eventNumInvite"></span></h4>
-        <h4>Description:</h4>
-        <h5 id="eventDescript"></h5>
-        <!-- //div for google maps-->
+      <div class="callout eventContainer">
+        <div class="eventDetails">
+          <h4>Event Code: <span id="eventCode"></span></h4>
+          <h4>Address: <span id="eventAddr"></span></h4>
+          <h4>Date of fun: <span id="eventDate"></span></h4>
+          <h4>Gamers Invited: <span id="eventNumInvite"></span></h4>
+          <h4>Description:</h4>
+          <h5 id="eventDescript"></h5>
+        </div>
         <div id="map">MAP IS HERE</div>
       </div>
       <div class="titleBkgd">
         <h2>Vote Before <span id="voteDeadline"></span></h2>
         <button id="addSubmission_btn" class="button" data-open="votingModal">Add to the Voting Pool</button>
       </div>
-      <div id="voteSection" class="callout">
+      <div id="voteSection" class="callout voteContainer">
         <h4>Current Voting Status</h4>
         <section id="voteResultsList">
           <!-- dynamic voted items go here -->
@@ -66,9 +69,7 @@
             <input type="image" src="assets/images/3rd-Choice-Thumbnail.jpg" alt="Third Choice">
           </span>
         </section>
-
-        <h4 style="display: inline">My Votes</h4>
-        <button id="voteLock_btn" class="button">Rock & Lock the Vote</button>
+        <h4>My Votes</h4>
         <section id="myVotedList">
           <!-- dynamic voted items go here -->
           <span class="voteChoice" data-id="1">
@@ -81,6 +82,8 @@
             <input type="image" src="assets/images/3rd-Choice-Thumbnail.jpg" alt="Third Choice">
           </span>
         </section>
+        <button id="voteLock_btn" class="button">Rock & Lock the Vote</button>
+        <br>
         <h4>The Voting Pool</h4>
         <div id="submissionsList">
           <!-- dynamic submission items go here -->
@@ -106,31 +109,12 @@
         </template>
       </div>
     </div>
-
-    <div class="row columns">
-      <div class="off-canvas-wrapper">
-        <div class="off-canvas position-right" id="offCanvasRight1" data-off-canvas>
-          <!-- Your menu or Off-canvas content goes here -->
-          <h1>GAME TITLE</h1>
-          <img>THUMBNAIL:)
-          <br>
-          <h5>Duration:</h5>
-          <h5>Complexity:</h5>
-          <h5>Number of Players:</h5>
-          <h5>Description:</h5>
-        </div>
-      </div>
-    </div>
-
   </div>
   <!-- Adding to the voting pool modal -->
   <div class="small reveal" id="votingModal" data-reveal>
     <div class="grid-container">
       <div class="grid-x grid-padding-x">
         <div class="grid-x cell medium-12" id="gameSelection">
-          <button class="close-button" data-close aria-label="Close reveal" type="button">
-            <span aria-hidden="true">&times;</span>
-          </button>
           <ul id="chosenGames">
             <!-- JS INSERTS HERE KEEP CLEAR -->
           </ul>
@@ -153,8 +137,8 @@
     <script>$(document).foundation();</script>
     <script src="https://www.gstatic.com/firebasejs/5.5.4/firebase.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js'></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-nghbSyP_qhRsJtnhK7NZrne-JpaWaeQ&callback=initMap" async
-      defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-nghbSyP_qhRsJtnhK7NZrne-JpaWaeQ&callback=initMap"
+      async defer></script>
     <script src="assets/javascript/firebase.js"></script>
     <script src="assets/javascript/xml2json.js"></script>
     <script src="assets/javascript/app.js"></script>
