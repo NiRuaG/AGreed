@@ -458,7 +458,7 @@ function animateEvent($eventDOM){
 }
 
 function listenForAddEvent(args) {
-    console.log("heard you wanted to add an event of mine", args.key);
+    // console.log("heard you wanted to add an event of mine", args.key);
 
     // Get the details from Events Ref
     eventsRef.child(`${args.key}/details`).once("value").then( snapDetails => {
