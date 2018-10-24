@@ -6,8 +6,10 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Not so BORED Games</title>
+  <link rel="stylesheet" href="assets/css/reset.css">
   <link rel="stylesheet" href="Foundation-6.4.2/css/foundation.css">
   <link rel="stylesheet" href="assets/css/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Stardos+Stencil|Fredericka+the+Great" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 </head>
 
@@ -17,10 +19,8 @@
     <form id="loginForm">
       <div class="grid-container">
         <div class="grid-x grid-padding-x">
-          <div class="medium-6">
-            <label>Username
-              <input id="login_userName" type="text" placeholder="Unique Username">
-            </label>
+          <div class="medium-12">
+            <input id="login_userName" type="text" placeholder="Unique Username">
           </div>
           <input class="button expanded large-down-expanded" id="login_submit" type="submit" value="Login / Sign-Up">
         </div>
@@ -32,41 +32,42 @@
   </div>
 
   <main class="grid-x grid-margin-x">
-    <ul class="vertical menu cell medium-2">
-      <li class="circularThumbnail"></li>
+    <div class=" cell medium-1" id="siteTitle">
+      <h1>NOT SO BOARD GAMES</h1>
+    </div>
+    <div class="vertical menu cell medium-2">
+      <img id="profileThumbnail" src="assets/images/Thumbnail_Potatoe.jpg">
       <br>
-      <span id="username"></span>
+      <h3 id="username"></h3>
+      <a class="eventModal" id="createEventBtn" href="#" data-open="eventModal" style="display:none">CREATE AN EVENT</a>
       <button id="signout_btn" class="button">Sign Out</button>
-      <button id="signin_btn" class="button">Sign In</button>
-      <li><a href="#">Link to something maybe</a></li>
-      <li><a href="#">Something else..placeholder</a></li>
-    </ul>
-    <section id="eventsSection" class="cell medium-4">
-      <h3>Events</h3>
-      <a class="eventModal" href="#" data-open="eventModal">Create an Event</a>
+      <button id="signin_btn" class="button">SIGN IN</button>
+    </div>
+
+    <section id="eventsSection" class="cell medium-4" style="display:none">
+      <h3 class="titleBkgd">EVENTS</h3>
+      </div>
       <form id="joinEventForm">
         <input id="joinEvent_input" type="text" placeholder="Join Event by CODE">
       </form>
       <div id="eventsList">
         <!-- dynamic fill events go here -->
       </div>
-      <template id="eventTemplate">
-        <div class="eventTmp_listItem stack-for-small">
+      <template id="eventTemplate"><div class="eventTmp_listItem stack-for-small">
           <div class="eventThumbnail thumbnail">
             <img id="eventImage" src="assets/images/eventThumbnail.png" alt="Temporary event thumbnail">
           </div>
           <div class="eventDetails">
             <a class="eventTmp_title" href="events.html">The Best Game Night Title Ever</a>
             <p class="eventTmp_date">Some Date</p>
-            <p>Where: <span class="eventTmp_addr"></span></p>
+            <p  id="eventAddress">Where: <span class="eventTmp_addr"></span></p>
             <p class="eventTemp_joinID">ID</p>
           </div>
-        </div>
-      </template>
+        </div></template>
     </section>
     <!-- Area regarding the events and personalized collection of games -->
-    <section id="collectionSection" class="cell medium-6">
-      <h3>My Collection</h3>
+    <section id="collectionSection" class="cell medium-5" style="display:none">
+      <h3 class="titleBkgd">GAMES</h3>
       <div class="bggLink">
         <form id="bggLinkForm">
           <input id="bggLink_input" type="text" placeholder="Existing BoardGameGeek Username">
@@ -80,14 +81,12 @@
         <!-- dynamic collection items go here -->
       </ul>
       <template id="gameTemplate">
-        <li class="gameTmp_listItem collectionThumbnail tooltip">
+        <li class="gameTmp_listItem collectionThumbnail hoverTooltip">
           <p class="gameTmp_title">Template Title</p>
           <img class="gameTmp_img" src="./assets/images/Collection1.jpg">
         </li>
       </template>
     </section>
-
-
   </main>
 
 
@@ -113,15 +112,15 @@
           </div>
           <div class="medium-12">
             <label>Hopeful # of Invitees
-              <input id="eventNumInvites" type="number" placeholder="0">
+              <input id="eventNumInvites" type="number" placeholder="100">
             </label>
           </div>
           <div class="medium-12">
             <label>Event Description
-              <textarea id="eventDescript" placeholder="None"></textarea>
+              <textarea id="eventDescript" placeholder="From 1 to 10 how excited are you? Will there be food??"></textarea>
             </label>
           </div>
-          <input class="button expanded large-down-expanded" id="event_submit" type="submit" href="#" value="Create Event">
+          <input class="button expanded large-down-expanded" id="event_submit" type="submit" href="#" value="CREATE EVENT">
         </div>
       </div>
     </form>
@@ -134,6 +133,7 @@
     <script>$(document).foundation();</script>
     <script src="https://www.gstatic.com/firebasejs/5.5.4/firebase.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js'></script>
     <script src="assets/javascript/firebase.js"></script>
     <script src="assets/javascript/xml2json.js"></script>
     <script src="assets/javascript/app.js"></script>

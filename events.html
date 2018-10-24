@@ -6,45 +6,85 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Join or Add Events!</title>
+  <link rel="stylesheet" href="assets/css/reset.css">
   <link rel="stylesheet" href="Foundation-6.4.2/css/foundation.css">
   <link rel="stylesheet" href="assets/css/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Stardos+Stencil|Fredericka+the+Great" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="assets/javascript/xml2json.js"></script>
 </head>
 
 <body>
   <div class="grid-x grid-margin-x">
-    <ul class="vertical menu cell medium-2">
-      <a href="./index.html" class="circularThumbnail"></a>
+    <div class=" cell medium-1" id="siteTitle">
+      <h1>NOT SO BOARD GAMES</h1>
+    </div>
+    <div class="vertical menu cell medium-2">
+      <a href="index.html">
+        <img id="profileThumbnail" src="assets/images/Thumbnail_Potatoe.jpg">
+      </a>
       <br>
-      <span id="username"></span>
-      <li><a href="#">Link to something maybe</a></li>
-      <li><a href="#">Something else..placeholder</a></li>
-    </ul>
+      <h3 id="username"></h3>
+      <button id="signout_btn" class="button">Sign Out</button>
+    </div>
     <!-- Event page for clicked event -->
-    <div class="cell medium-10">
-      <h2 id="eventName"></h2>
+    <div class="cell medium-9 mainPageContent">
+      <h2 id="eventName" class="titleBkgd"></h2>
       <!-- thumbnail? | details(date, address(+maps), # of people, desc-->
       <!-- <div class="eventPageThumbnail thumbnail">
         <img id="eventImage" src="assets/images/eventThumbnail.png" alt="Temporary event thumbnail">
       </div> -->
-      <div class="callout">
-        <h4>Event Code: <span id="eventCode"></span></h4>
-        <h4>Address: <span id="eventAddr"></span></h4>
-        <h4>Date of fun: <span id="eventDate"></span>&nbsp;&nbsp;|&nbsp;&nbsp;# of Gamers Invited: <span id="eventNumInvite"></span></h4>
-        <h4>Description:</h4>
-        <h5 id="eventDescript"></h5>
-        <!-- //div for google maps-->
+      <div class="callout eventContainer">
+        <div class="eventDetails">
+          <h4><strong>Event Code:</strong> <span id="eventCode"></span></h4>
+          <h4><strong>Address:</strong> <span id="eventAddr"></span></h4>
+          <h4><strong>Date of fun:</strong> <span id="eventDate"></span></h4>
+          <h4><strong>Gamers Invited:</strong> <span id="eventNumInvite"></span></h4>
+          <h4><strong>Description:</strong></h4>
+          <h5 id="eventDescript"></h5>
+        </div>
         <div id="map">MAP IS HERE</div>
       </div>
-      <h2>Vote before <span id="voteDeadline"></span></h2>
-      <div class="callout">
-        <p><button class="button" data-open="votingModal">Add to the Voting Pool</button></p>
-        <h4>My Votes:</h4>
+      <div class="titleBkgd">
+        <h2>Vote Before <span id="voteDeadline"></span></h2>
+        <button id="addSubmission_btn" class="button" data-open="votingModal">Add to the Voting Pool</button>
+      </div>
+      <div id="voteSection" class="callout voteContainer">
+        <h4><strong>Current Voting Status</strong></h4>
+        <section id="voteResultsList">
+          <!-- dynamic voted items go here -->
+          <span class="voteResult" data-id="1">
+            <span class="voteResultLanding"></span>
+            <p class="voteResultCount"></p>
+            <input type="image" src="assets/images/1st-Choice-Thumbnail.jpg" alt="First Choice">
+          </span>
+          <span class="voteResult" data-id="2">
+            <div class="voteResultLanding"></div>
+            <p class="voteResultCount"></p>
+            <input type="image" src="assets/images/2nd-Choice-Thumnail.jpg" alt="Second Choice">
+          </span>
+          <span class="voteResult" data-id="3">
+            <div class="voteResultLanding"></div>
+            <p class="voteResultCount"></p>
+            <input type="image" src="assets/images/3rd-Choice-Thumbnail.jpg" alt="Third Choice">
+          </span>
+        </section>
+        <h4><strong>My Votes</strong></h4>
         <section id="myVotedList">
           <!-- dynamic voted items go here -->
+          <span class="voteChoice" data-id="1">
+            <input type="image" src="assets/images/1st-Choice-Thumbnail.jpg" alt="First Choice">
+          </span>
+          <span class="voteChoice" data-id="2">
+            <input type="image" src="assets/images/2nd-Choice-Thumnail.jpg" alt="Second Choice">
+          </span>
+          <span class="voteChoice" data-id="3">
+            <input type="image" src="assets/images/3rd-Choice-Thumbnail.jpg" alt="Third Choice">
+          </span>
         </section>
-        <h4>Voting Pool</h4>
+        <button id="voteLock_btn" class="button">Rock & Lock the Vote</button>
+        <br>
+        <h4><strong>The Voting Pool</strong></h4>
         <div id="submissionsList">
           <!-- dynamic submission items go here -->
         </div>
@@ -60,8 +100,9 @@
                 <p class="gameTmp_title">Template Title</p>
                 <img class="gameTmp_img" src="./assets/images/Collection3.jpg">
               </div> -->
+
         <template id="submissionTemplate">
-          <li class="gameTmp_listItem thumbnail collectionThumbnail tooltip">
+          <li class="gameTmp_listItem collectionThumbnail hoverTooltip">
             <p class="gameTmp_title"></p>
             <img class="gameTmp_img" src="./assets/images/Collection1.jpg">
           </li>
@@ -71,27 +112,23 @@
   </div>
   <!-- Adding to the voting pool modal -->
   <div class="small reveal" id="votingModal" data-reveal>
-    <button class="close-button" data-close aria-label="Close reveal" type="button">
-      <span aria-hidden="true">&times;</span>
-    </button>
-      <div class="grid-container">
-        <div class="grid-x grid-padding-x">
-          <div class="cell medium-12" id="gameSelection">
-            <h5>To the Pool!</h5>
-            <div id="chosenGames">
-              <!-- js inserts -->
-            </div>
-            <button class="button expanded large-down-expanded">I'm done adding games</button>
-          </div>
-        <div class="cell medium-12">
-          <h5>My Collection</h5>
+    <div class="grid-container">
+      <div class="grid-x grid-padding-x">
+        <div class="grid-x cell medium-12" id="gameSelection">
+          <ul id="chosenGames">
+            <!-- JS INSERTS HERE KEEP CLEAR -->
+          </ul>
+          <button id="doneSubmit" class="button expanded large-down-expanded">I'm done adding games</button>
+        </div>
+        <div class="cell medium-12" id="modalCollection">
+          <h3 id="voteCollectionTitle">My Collection</h3>
           <div id="collectionList">
-            <!-- js inserts -->
+            <!-- JS INSERTS HERE KEEP CLEAR -->
           </div>
         </div>
       </div>
+    </div>
   </div>
-
   <!-- <input -->
   <div id="added sources and pages">
     <script src="Foundation-6.4.2/js/vendor/jquery.js"></script>
