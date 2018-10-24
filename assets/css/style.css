@@ -2,16 +2,18 @@ body {
   background: 
   url("../images/architecture-bg.jpg") 100% no-repeat;
   background-color: black;
+  /* position: top; */
 }
 
 #siteTitle {
-  padding-top: 1rem;
+  padding: 1rem .5rem;
   background-image: linear-gradient(rgba(0, 0, 0, .75), rgba(0, 0, 0, 0));
   height: 200%;
   writing-mode: vertical-rl;
   text-orientation: upright;
   color: rgb(179, 255, 0);
-  padding-right: 1rem;
+  /* vertical-align: middle; */
+  /* padding-right: 1rem; */
 }
 
 #loginModal {
@@ -68,6 +70,22 @@ body {
   color: black;
 }
 
+#eventModal {
+  border: solid .1rem rgb(179, 255, 0);
+  background: rgba(0, 0, 0, .75);
+  color: rgb(179, 255, 0);
+}
+
+#eventModal label {
+  color: rgb(179, 255, 0);
+}
+
+#eventModal .button {
+ background: rgb(179, 255, 0);
+ color: black;
+ margin-top: 1rem;  
+}
+
 #eventsSection,
 #collectionSection {
   color: white;
@@ -93,8 +111,17 @@ body {
   padding: 0.25% 1rem;
   background-image: linear-gradient(-90deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
   color: rgb(179, 255, 0);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 }
 
+.titleBkgd button, #voteLock_btn {
+  background-color: rgb(179, 255, 0);
+}
+#voteLock_btn {
+  color: black;
+}
 
 #eventImage {
   width: 100%;
@@ -139,12 +166,19 @@ body {
   margin-bottom: 0;
 }
 
+#chosenGames {
+  margin: 1rem 1.5rem 0 1.5rem;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-end;
+}
+
 .collectionThumbnail {
-  max-width: 30%;
+  /*! width: 50%;  problem */
   margin: 0 1% 2% 1%;
 }
 
-.tooltip {
+.hoverTooltip {
   position: relative;
   display: inline-block;
   background: transparent;
@@ -153,9 +187,10 @@ body {
 }
 
 /* Tooltip text */
-.tooltip .gameTmp_title {
+.hoverTooltip .gameTmp_title {
   display: none;
   background-color:black;
+  color:  rgb(179, 255, 0);
   text-align: center;
   padding: 0.2rem 0.3rem;
   /* border-radius: 6px; */
@@ -166,11 +201,11 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .gameTmp_title {
+.hoverTooltip:hover .gameTmp_title {
   display: initial;
 }
 
@@ -183,10 +218,6 @@ body {
   margin-bottom: 3rem;
   border: solid .1rem rgb(179, 255, 0)
 
-}
-
-#eventDescript {
-  margin-left: 2rem;
 }
 
 #map {
@@ -209,33 +240,24 @@ body {
   border-bottom: solid .25rem rgb(40, 46, 42);
   margin: 0;
 }
-
+/* 
 #votingModal #collectionList {
   overflow: auto;
-}
+} */
 
 #collectionList {
-  margin: 1.5rem .75rem;
+  margin: 1rem .75rem;
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
   align-items: flex-end;
 }
 
-#chosenGames {
-  margin: 0 auto;
-}
-
-#chosenGames img {
-  max-width: 125px;
-  border-style: solid;
-  border-width: 1px;
-  border-color: rgb(40, 46, 42);
-  margin: 1rem 1.5rem 0 1.5rem;
-}
-
 #gameSelection h5,#gameSelection button {
   margin: 1rem;
+}
+#gameSelection button {
+  margin-right: 0;
 }
 
 #voteCollectionTitle {
@@ -244,4 +266,11 @@ body {
 
 #modalCollection {
   padding: 0;
+}
+
+#voteResultsList, #myVotedList {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-items: flex-end;
 }

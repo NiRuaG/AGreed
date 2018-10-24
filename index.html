@@ -49,16 +49,10 @@
       <form id="joinEventForm">
         <input id="joinEvent_input" type="text" placeholder="Join Event by CODE">
       </form>
-      <div id="cssSelector">
-          <div class="line">
-            <div class="square el" style="display: inline-block; width: 100px; height: 100px; background: red"></div>
-          </div>
-        </div>
       <div id="eventsList">
         <!-- dynamic fill events go here -->
       </div>
-      <template id="eventTemplate">
-        <div class="eventTmp_listItem stack-for-small">
+      <template id="eventTemplate"><div class="eventTmp_listItem stack-for-small">
           <div class="eventThumbnail thumbnail">
             <img id="eventImage" src="assets/images/eventThumbnail.png" alt="Temporary event thumbnail">
           </div>
@@ -68,8 +62,7 @@
             <p>Where: <span class="eventTmp_addr"></span></p>
             <p class="eventTemp_joinID">ID</p>
           </div>
-        </div>
-      </template>
+        </div></template>
     </section>
     <!-- Area regarding the events and personalized collection of games -->
     <section id="collectionSection" class="cell medium-5" style="display:none">
@@ -87,14 +80,12 @@
         <!-- dynamic collection items go here -->
       </ul>
       <template id="gameTemplate">
-        <li class="gameTmp_listItem collectionThumbnail tooltip">
+        <li class="gameTmp_listItem collectionThumbnail hoverTooltip">
           <p class="gameTmp_title">Template Title</p>
           <img class="gameTmp_img" src="./assets/images/Collection1.jpg">
         </li>
       </template>
     </section>
-
-
   </main>
 
 
@@ -120,12 +111,12 @@
           </div>
           <div class="medium-12">
             <label>Hopeful # of Invitees
-              <input id="eventNumInvites" type="number" placeholder="0">
+              <input id="eventNumInvites" type="number" placeholder="100">
             </label>
           </div>
           <div class="medium-12">
             <label>Event Description
-              <textarea id="eventDescript" placeholder="None"></textarea>
+              <textarea id="eventDescript" placeholder="From 1 to 10 how excited are you? Will there be food??"></textarea>
             </label>
           </div>
           <input class="button expanded large-down-expanded" id="event_submit" type="submit" href="#" value="Create Event">

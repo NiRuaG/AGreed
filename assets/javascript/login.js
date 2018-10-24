@@ -398,7 +398,10 @@ function creatEvent(eventObj) {
   newEventRef.remove();
   eventObj.created = firebase.database.ServerValue.TIMESTAMP,
   eventsRef.child(eventUID).set(eventObj);
-  thisUsersRef.child("myEvents").child(eventUID).set(eventObj);
+  thisUsersRef.child("myEvents").child(eventUID).set({
+    submitted: false,
+    voted: false,
+  });
 
   //? TODO: make this safer to make sure the event was added to ref list, before adding it to user ref 
   //? Update local var, local storage 
@@ -423,7 +426,10 @@ function joinEventByID(eventID) {
         const event = snap.child(eventID);
         if (event.exists()) {
           console.log("FB events has this ID", event, event.key, event.val());
-          thisUsersRef.child("myEvents").child(event.key).set(true);
+          thisUsersRef.child("myEvents").child(event.key).set({
+            submitted: false,
+            voted: false,
+          });
           console.log("added to my events");
           //? TODO: link to set()'s success
         } else {
@@ -437,7 +443,21 @@ function joinEventByID(eventID) {
 }
 
 //* Listeners
-  function listenForAddEvent(args) {
+function animateEvent($eventDOM){
+  $eventDOM.css({ height: 'auto' });
+  const fullHeight = $eventDOM[0].scrollHeight; //? not quite right though..
+
+  let animation = anime({
+    targets: $eventDOM[0],
+    height: ['0', fullHeight],
+    easing: 'easeInOutQuad'
+  });
+  animation.complete = function() {
+    $eventDOM[0].style.height = 'auto';
+  }
+}
+
+function listenForAddEvent(args) {
     console.log("heard you wanted to add an event of mine", args.key);
 
     // Get the details from Events Ref
@@ -459,20 +479,13 @@ function joinEventByID(eventID) {
 
       JQ_IDs.eventsList.prepend($clone);
 
-      console.log($clone[0]);
-      var cssSelector = anime({
-        targets: $clone[0],
-        translateY: 100,
-        delay: 500,
-        loop: true,
-        direction: 'alternate'
-      });
-    });
-  }
+      return $clone;
+    }).then(animateEvent);
+}
 
 function listenForRemoveEvent(args) {
   console.log("heard you wanted to remove my event", args.val(), args.key);
-  $(DOM_FIND.eventTmp_listItem).find(`[data-event-id=${args.key}]`).remove();
+  $(DOM_FIND.eventTmp_listItem).find(`[data-event-id=${args.key}]`).closest(DOM_FIND.eventTmp_listItem).remove();
 }
 //#endregion EVENTS
 
