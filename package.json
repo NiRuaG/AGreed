@@ -1,0 +1,30 @@
+{
+  "name": "@niruag/agreed",
+  "version": "0.1.0",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
+    "start:prod": "node server.js",
+    "start:dev": "concurrently \"nodemon --ignore client/\" \"npm run client\"",
+    "client": "cd client && npm run start",
+    "install": "cd client && npm install",
+    "build": "cd client && npm run build",
+    "heroku-postbuild": "npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^4.1.0",
+    "nodemon": "^1.18.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NiRuaG/AGreed.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NiRuaG/AGreed/issues"
+  },
+  "homepage": "https://github.com/NiRuaG/AGreed#readme"
+}
