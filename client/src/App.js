@@ -1,25 +1,31 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
 
 class App extends Component {
+  state = {
+    gamesCollection: ['Root','Hanabi','Power Grid']
+  } 
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div style={{
+        // grid
+      }}>
+
+        <aside style={{ background: 'red' }}>
+          User/Profile info
+        </aside>
+
+        <section style={{ background: 'blue' }}>
+          Events List
+        </section>
+
+        <section style={{ background: 'green ' }}>
+          <h>Games List</h>
+          {this.state.gamesCollection.map(coll => (
+            <p>{coll}</p>
+          ))}
+        </section>
+
       </div>
     );
   }
