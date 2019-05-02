@@ -1,2 +1,10 @@
-Todo:
-  ☐ consider redis store
+Tech considerations:
+  ☐ redux
+
+Feature considerations:
+  ☐ messaging?
+  ☐ attendance?
+  ☐ groups
+  ☐ upload files
+  ☐ directions
+  ☐ searchable/filterable collections
