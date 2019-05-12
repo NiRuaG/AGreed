@@ -5,6 +5,7 @@ const app = express();
 
 //* Middleware
 app.use(
+  require('morgan')('dev'), // Logging
     express.urlencoded({ extended: true }),
     express.json()
 );
