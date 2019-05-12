@@ -1,7 +1,3 @@
-# NotSoBoard Games
-Project #1 for Bootcamp
-> _**Hosted as a GitHub Page @ https://javascript-juggernauts.github.io/NU_BC-Project1/**_
-
 ## Democratically Decide what board game to play for your group's next event
 ### 
 - Signup with an account 
