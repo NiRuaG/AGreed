@@ -1,6 +1,10 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
 import styled from 'styled-components';
+
+import Collection from './components/Collection';
+import FormBGG    from './components/FormBGG';
+
 
 const MainLayout = styled.div`
   min-height: 100vh;
@@ -11,42 +15,52 @@ const MainLayout = styled.div`
     "user events collection";
 `;
 
-class App extends Component {
-  state = {
-    gamesCollection: ['Root','Hanabi','Power Grid']
-  }
+const CollectionSection = styled.section`
+  background: lightgreen;
+  grid-area: collection;
+`;
 
-  render() {
-    return (
-      <MainLayout>
+// const StyledCollection = styled(Collection)`
+// `;
 
-        <aside style={{
-          background: 'darkred',
-          gridArea: 'user'
-        }}>
-          <h3>User/Profile info</h3>
-        </aside>
 
-        <section style={{
-          background: 'lightblue',
-          gridArea: 'events'
-        }}>
-          <h3>Events List</h3>
-        </section>
+export default function App() {
 
-        <section style={{
-          background: 'lightgreen',
-          gridArea: 'collection'
-        }}>
-          <h3>Games List</h3>
-          {this.state.gamesCollection.map(coll => (
-            <p>{coll}</p>
-          ))}
-        </section>
+  const [gamesCollection, /*setGamesCollection*/] = 
+    useState([
+      { id: 1, title: 'Root' },
+      { id: 2, title: 'Hanabi' },
+      { id: 3, title: 'Power Grid' },
+    ]);
 
-      </MainLayout>
-    );
-  }
+  return (
+    <MainLayout>
+
+      <aside style={{
+        background: 'darkred',
+        gridArea: 'user'
+      }}>
+        <h3>User/Profile info</h3>
+      </aside>
+
+      <section style={{
+        background: 'lightblue',
+        gridArea: 'events'
+      }}>
+        <h3>Events List</h3>
+      </section>
+
+      <CollectionSection>
+        <h3>Games List</h3>
+
+        <FormBGG />
+
+        <Collection
+          coll={gamesCollection}
+        />
+      </CollectionSection>
+
+    </MainLayout>
+  );
+
 }
-
-export default App;
