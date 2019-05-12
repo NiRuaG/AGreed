@@ -1,0 +1,35 @@
+<user id="917172" name="niruag" termsofuse="https://boardgamegeek.com/xmlapi/termsofuse">
+    <firstname value="a"/>
+    <lastname value="g"/>
+    <avatarlink value="N/A"/>
+    <yearregistered value="2014"/>
+    <lastlogin value="2019-03-01"/>
+    <stateorprovince value=""/>
+    <country value=""/>
+    <webaddress value=""/>
+    <xboxaccount value=""/>
+    <wiiaccount value=""/>
+    <psnaccount value=""/>
+    <battlenetaccount value=""/>
+    <steamaccount value=""/>
+    <traderating value="0"/>
+    <marketrating value="0"/>
+</user>
+
+<!-- <user id="" name="shouldnotexistright" termsofuse="https://boardgamegeek.com/xmlapi/termsofuse">
+    <firstname value=""/>
+    <lastname value=""/>
+    <avatarlink value="N/A"/>
+    <yearregistered value=""/>
+    <lastlogin value=""/>
+    <stateorprovince value=""/>
+    <country value=""/>
+    <webaddress value=""/>
+    <xboxaccount value=""/>
+    <wiiaccount value=""/>
+    <psnaccount value=""/>
+    <battlenetaccount value=""/>
+    <steamaccount value=""/>
+    <traderating value="362"/>
+    <marketrating value="0"/>
+</user> -->
