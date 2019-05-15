@@ -1,5 +1,14 @@
 // https://boardgamegeek.com/wiki/page/BGG_XML_API2
+const { path, ifElse, or, isEmpty, isNil, identity, always } = require('ramda');
 
+const pathToUserId = path(['user','$', 'id']);
+
+// const makeObjOrReject = 
+//   ifElse(
+//     or(isEmpty, isNil),
+//     always(Promise.reject("path to user's id is empty or DNE")),
+//     always({ id: identity })
+//   );
 
 module.exports = {
   
@@ -50,10 +59,6 @@ module.exports = {
   //     }
   //   };
 
-  //   // #region Example Response
-  //   // let exampleRespObj = [ { "$": { "objecttype": "thing", "objectid": "68448", "subtype": "boardgame", "collid": "24961369" }, "name": { "$": { "sortindex": "1" }, "_": "7 Wonders" }, "yearpublished": "2010", "image": "https://cf.geekdo-images.com/original/img/3DP_RW5lTX0WrV67s8qi8CsiXoQ=/0x0/pic860217.jpg", "thumbnail": "https://cf.geekdo-images.com/thumb/img/Grz-qM9xwxlvQGK7B-MiljtO9pQ=/fit-in/200x150/pic860217.jpg", "status": { "$": { "own": "1", "prevowned": "0", "fortrade": "0", "want": "0", "wanttoplay": "0", "wanttobuy": "0", "wishlist": "0", "preordered": "0", "lastmodified": "2017-07-10 18:27:03" }, "_": "" }, "numplays": "0" }, { "$": { "objecttype": "thing", "objectid": "155987", "subtype": "boardgame", "collid": "43725531" }, "name": { "$": { "sortindex": "1" }, "_": "Abyss" }, "yearpublished": "2014", "image": "https://cf.geekdo-images.com/original/img/QZD3-w6S6hbAQO7AfTFc342WsqI=/0x0/pic1965255.jpg", "thumbnail": "https://cf.geekdo-images.com/thumb/img/89XgMkYK9NLsjRxzSXm3JK9jou0=/fit-in/200x150/pic1965255.jpg", "status": { "$": { "own": "1", "prevowned": "0", "fortrade": "0", "want": "0", "wanttoplay": "0", "wanttobuy": "0", "wishlist": "0", "preordered": "0", "lastmodified": "2017-07-10 17:47:38" }, "_": "" }, "numplays": "0" }, { "$": { "objecttype": "thing", "objectid": "31260", "subtype": "boardgame", "collid": "24027746" }, "name": { "$": { "sortindex": "1" }, "_": "Agricola" }, "yearpublished": "2007", "image": "https://cf.geekdo-images.com/original/img/L-UBO3rBOmvIrZHZLSXOypyAUPw=/0x0/pic259085.jpg", "thumbnail": "https://cf.geekdo-images.com/thumb/img/zl48oz7IeKlgWJVBLYd0nFJumdA=/fit-in/200x150/pic259085.jpg", "status": { "$": { "own": "1", "prevowned": "0", "fortrade": "0", "want": "0", "wanttoplay": "0", "wanttobuy": "0", "wishlist": "0", "preordered": "0", "lastmodified": "2014-08-15 17:42:57" }, "_": "" }, "numplays": "0" } ];
-  //   // #endregion Example Response
-
   //   return BGG_API._getAjax().then(function (collectionObj) {
   //     // console.log(collectionObj.items.item);
   //     let mapped = collectionObj.items.item.map(item => {
@@ -81,11 +86,19 @@ module.exports = {
       }
     };
 
-    // user.$.id will be a # (string) IF the username exists, blank ("") otherwise
+    // id will be a # (as a string) IF the username exists, blank ("") otherwise
     // user.$.name will be a copy of whatever the query parameter was, also copying upper/lower cases
     return (
-      BGG_API._getAjax(config)
-      .then(userXMLObj => ({ id: userXMLObj.user.$.id }))
+      // BGG_API._getAjax(config)
+      Promise.resolve({ user: { $: { xid: '123' } } })
+      .then(pathToUserId) // get .user.$.id if exists otherwise undefined
+
+      .then(id => id
+        ? { id }
+        : Promise.reject("path to user's id is empty or DNE")
+      )
+      // .then(makeObjOrReject)
+
       .catch(error => {
         console.log("Error @ checkUserName", error);
       })
