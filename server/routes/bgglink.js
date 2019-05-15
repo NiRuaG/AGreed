@@ -1,5 +1,7 @@
 const router = require('express').Router();
 
+const { checkUserName } = require('./../APIs/bgg_api');
+
 router.use(
   (req, res, next) => {
     console.log(`\n\t\t@routes/bgglink ${req.method.toUpperCase()} on ${req.baseUrl}${req.path} (${req.originalUrl})`);
@@ -18,9 +20,10 @@ router.route('/')
   })
 
   //* POST
-  .post((req, res) => {
+  .post(async (req, res) => {
     console.log(req.body);
-    res.status(200).json(req.body);userXMLObj
+    const idObj = await checkUserName(req.body)
+    res.status(200).json(idObj);
   })
 
   ; // router.route('/')
